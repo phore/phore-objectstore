@@ -90,11 +90,14 @@ class ObjectStoreObject
         return $this;
     }
 
-    public function getMeta() : array
+    public function getMeta($key=null, $default=null) : array
     {
         if ( ! $this->metaData)
             $this->metaData = $this->driver->getMeta($this->objectId);
-        return $this->metaData;
+        $data = $this->metaData;
+        if ($key !== null)
+            return phore_pluck($key, $data, $default);
+        return $data;
     }
 
     public function setMeta(array $metaData) : self

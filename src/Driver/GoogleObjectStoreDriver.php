@@ -114,8 +114,6 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
     }
 
 
-
-
     public function walk(callable $walkFunction, string $filter=null): bool
     {
         foreach ($this->bucket->objects() as $object) {
