@@ -9,8 +9,9 @@
 namespace Phore\ObjectStore\Type;
 
 
+use Phore\Core\Exception\NotFoundException;
 use Phore\ObjectStore\Driver\ObjectStoreDriver;
-use Phore\ObjectStore\ObjectNotFoundException;
+
 use Psr\Http\Message\StreamInterface;
 
 class ObjectStoreObject
@@ -40,7 +41,7 @@ class ObjectStoreObject
     /**
      * @param string $objectId
      * @return string
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function get() : string
     {
@@ -50,7 +51,7 @@ class ObjectStoreObject
     /**
      * @param string $objectId
      * @return StreamInterface
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function getStream() : StreamInterface
     {
@@ -60,7 +61,7 @@ class ObjectStoreObject
     /**
      * @param string $objectId
      * @return array
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function getJson (string $objectId) : array
     {

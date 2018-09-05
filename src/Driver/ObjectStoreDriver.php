@@ -9,7 +9,7 @@
 namespace Phore\ObjectStore\Driver;
 
 
-use Phore\ObjectStore\ObjectNotFoundException;
+use Phore\Core\Exception\NotFoundException;
 use Psr\Http\Message\StreamInterface;
 
 interface ObjectStoreDriver
@@ -21,28 +21,28 @@ interface ObjectStoreDriver
     /**
      * @param string $objectId
      * @return StreamInterface
-     * @throws \Phore\ObjectStore\ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function get(string $objectId, array &$meta=null) : string;
     
     /**
      * @param string $objectId
      * @return StreamInterface
-     * @throws \Phore\ObjectStore\ObjectNotFoundException
+     * @throws  NotFoundException
      */
     public function getStream(string $objectId, array &$meta=null) : StreamInterface;
 
 
     /**
      * @param string $objectId
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function remove(string $objectId);
 
     /**
      * @param string $objectId
      * @param string $newObjectId
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function rename(string $objectId, string $newObjectId);
 

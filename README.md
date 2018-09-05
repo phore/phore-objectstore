@@ -1,9 +1,9 @@
-# Cloudstore - Wrapper for various cloud based buckets
+# ObjectStore - Wrapper for various cloud based buckets
 
 ## Install
 
 ```
-composer requre phore/cloudstore
+composer requre phore/objectstore
 ```
 
 ## Basic usage

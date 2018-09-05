@@ -9,10 +9,10 @@
 namespace Phore\ObjectStore\Driver;
 
 
-use Google\Cloud\Core\Exception\NotFoundException;
 use Google\Cloud\Storage\Bucket;
 use Google\Cloud\Storage\StorageClient;
-use Phore\ObjectStore\ObjectNotFoundException;
+
+use Phore\Core\Exception\NotFoundException;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 use Psr\Http\Message\StreamInterface;
 
@@ -61,25 +61,6 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
         $this->bucket->upload($content, $opts);
     }
 
-    /**
-     * @param string $objectId
-     * @return StreamInterface
-     * @throws \Phore\ObjectStore\ObjectNotFoundException
-     */
-    public function get(string $objectId): string
-    {
-        try {
-            return $this->bucket->object($objectId)->downloadAsString();
-        } catch (NotFoundException $e) {
-            throw new \Phore\ObjectStore\ObjectNotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    public function getBucket() : Bucket
-    {
-        return $this->bucket;
-    }
-
     public function putStream(string $objectId, $ressource, array $metadata=null)
     {
         $opts = $this->_getPutOpts($objectId, $metadata);
@@ -89,7 +70,26 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
     /**
      * @param string $objectId
      * @return StreamInterface
-     * @throws \Phore\ObjectStore\ObjectNotFoundException
+     * @throws NotFoundException
+     */
+    public function get(string $objectId, array &$meta = null): string
+    {
+        try {
+            $object = $this->bucket->object($objectId);
+            $data = $object->downloadAsString();
+            $info = $object->info();
+            if (isset ($info["metadata"]))
+                $meta = $info["metadata"];
+            return $data;
+        } catch (\Google\Cloud\Core\Exception\NotFoundException $e) {
+            throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @param string $objectId
+     * @return StreamInterface
+     * @throws NotFoundException
      */
     public function getStream(string $objectId, array &$meta=null) : StreamInterface
     {
@@ -103,9 +103,18 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
 
             return $stream;
         } catch (NotFoundException $e) {
-            throw new \Phore\ObjectStore\ObjectNotFoundException($e->getMessage(), $e->getCode(), $e);
+            throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
         }
     }
+
+
+    public function getBucket() : Bucket
+    {
+        return $this->bucket;
+    }
+
+
+
 
     public function walk(callable $walkFunction, string $filter=null): bool
     {
@@ -129,7 +138,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
             $data = json_decode($data, true);
             if ($data === null)
                 throw new \InvalidArgumentException("Cannot json-decode meta data for object '$objectId': Invalid json data.");
-        } catch (NotFoundException $e) {
+        } catch (\Google\Cloud\Core\Exception\NotFoundException $e) {
             return [];
         }
     }
@@ -145,29 +154,29 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
 
     /**
      * @param string $objectId
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function remove(string $objectId)
     {
         try {
             $this->bucket->object($objectId)->delete();
-        } catch (NotFoundException $e) {
-            throw new ObjectNotFoundException("Object '$objectId' not found for removing.");
+        } catch (\Google\Cloud\Core\Exception\NotFoundException $e) {
+            throw new NotFoundException("Object '$objectId' not found for removing.");
         }
     }
 
     /**
      * @param string $objectId
      * @param string $newObjectId
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function rename(string $objectId, string $newObjectId)
     {
         try {
             $object = $this->bucket->object($objectId);
             $object->rename($newObjectId);
-        } catch (NotFoundException $e) {
-            throw new ObjectNotFoundException("Object '$objectId' not found for moving.");
+        } catch (\Google\Cloud\Core\Exception\NotFoundException $e) {
+            throw new NotFoundException("Object '$objectId' not found for moving.");
         }
     }
 }
