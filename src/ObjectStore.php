@@ -9,11 +9,9 @@
 namespace Phore\ObjectStore;
 
 
-use GuzzleHttp\Psr7\Stream;
-
 use Phore\ObjectStore\Driver\ObjectStoreDriver;
 use Phore\ObjectStore\Type\ObjectStoreObject;
-use Psr\Http\Message\StreamInterface;
+
 
 class ObjectStore
 {
