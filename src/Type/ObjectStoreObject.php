@@ -63,12 +63,12 @@ class ObjectStoreObject
      * @return array
      * @throws NotFoundException
      */
-    public function getJson (string $objectId) : array
+    public function getJson () : array
     {
         $data = $this->get();
         $ret = json_decode($data, true);
         if ($ret === null)
-            throw new \InvalidArgumentException("Cannot json-decode data from object '$objectId'");
+            throw new \InvalidArgumentException("Cannot json-decode data from object '$this->objectId'");
         return $ret;
     }
 
