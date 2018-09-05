@@ -11,11 +11,11 @@ composer requre phore/cloudstore
 ```php
 $store = new ObjectStore(new GoogleCloudStoreDriver(__DIR__ . "/file/to/identity.json", "bucketName"));
 
-$store->put("object/some.json", "Some Data");
+$store->object("object/some.json")->put("Some Data");
 
 if ($store->has("object/some.json"))
     echo "Object existing";
 
-echo $store->get("object/some.json");
+echo $store->object("object/some.json")->get();
 ```
 
