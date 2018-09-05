@@ -1,0 +1,32 @@
+{
+  "name": "phore/objectstore",
+  "description": "Object store for local files, google, aws",
+  "license": "MIT",
+  "authors": [
+    { "name": "Matthias Leuffen", "email": "m@tth.es" }
+  ],
+  "repositories": [
+  ],
+  "require": {
+    "php": ">=7.1",
+    "ext-json": "*",
+    "ext-yaml": "*"
+  },
+  "suggest": {
+    "google/cloud-storage": "If using Google Cloud services",
+    "phore/filesystem": "If using filesystem driver"
+  },
+  "autoload": {
+    "psr-4": {
+      "Phore\\ObjectStore\\": "src/"
+    },
+    "files": [
+
+    ]
+  },
+  "minimum-stability": "dev",
+  "require-dev": {
+    "nette/tester": "^2.1@dev",
+    "google/cloud-storage": "dev-master"
+  }
+}
