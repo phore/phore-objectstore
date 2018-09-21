@@ -26,6 +26,8 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     }
 
 
+    const META_SUFFIX = ".~META~";
+
     public function has(string $objectId): bool
     {
         return $this->rootDir->withSubPath($objectId)->isFile();
@@ -35,7 +37,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     {
         $this->rootDir->withSubPath($objectId)->asFile()->set_contents($content);
         if ($metadata !== null)
-            $this->rootDir->withSubPath($objectId . ".__META__")->asFile()->set_json($metadata);
+            $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile()->set_json($metadata);
     }
 
     public function putStream(string $objectId, $ressource, array $metadata = null)
@@ -50,7 +52,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     public function get(string $objectId, array &$meta = null): string
     {
-        $metaFile = $this->rootDir->withSubPath($objectId . ".__META__")->asFile();
+        $metaFile = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
         if ($metaFile->isFile())
             $meta = $metaFile->get_json();
 
@@ -73,7 +75,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     public function remove(string $objectId)
     {
-        $metaFile = $this->rootDir->withSubPath($objectId.".__META__")->asFile();
+        $metaFile = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
         if ($metaFile->isFile())
             $metaFile->unlink();
 
