@@ -22,16 +22,21 @@ class ObjectStoreObject
      */
     private $driver;
     private $objectId;
-
     private $metaData;
 
     public function __construct(ObjectStoreDriver $driver, string $objectId, array $metadata=null)
     {
+        $this->name = $name;
         $this->driver = $driver;
         $this->objectId = $objectId;
         $this->metaData = $metadata;
     }
 
+    public function getObjectId() : string 
+    {
+        $this->objectId;
+    }
+    
     public function exists() : bool
     {
         return $this->driver->has($this->objectId);
