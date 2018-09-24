@@ -96,7 +96,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
 
     public function walk(callable $walkFunction): bool
     {
-        $this->rootDir->walkR(function(PhoreFile $file) use ($walkFunction) {
+        return $this->rootDir->walkR(function(PhoreFile $file) use ($walkFunction) {
             if (endsWith($file, self::META_SUFFIX))
                 return true; // Ignore file
             $metaFile = phore_file($file . self::META_SUFFIX);
