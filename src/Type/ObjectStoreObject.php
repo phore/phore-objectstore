@@ -71,6 +71,16 @@ class ObjectStoreObject
             throw new \InvalidArgumentException("Cannot json-decode data from object '$this->objectId'");
         return $ret;
     }
+    
+    public function getYaml() : array
+    {
+        $data = $this->get();
+        $ret = yaml_parse($data);
+        if ($ret === false)
+            throw new \InvalidArgumentException("Cannot yaml_parse data from object '$this->objectId'");
+        return $ret;
+    }
+    
 
     public function put (string $data) : self
     {
