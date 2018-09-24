@@ -26,7 +26,6 @@ class ObjectStoreObject
 
     public function __construct(ObjectStoreDriver $driver, string $objectId, array $metadata=null)
     {
-        $this->name = $name;
         $this->driver = $driver;
         $this->objectId = $objectId;
         $this->metaData = $metadata;
