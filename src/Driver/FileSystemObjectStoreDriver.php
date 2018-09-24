@@ -10,6 +10,8 @@ namespace Phore\ObjectStore\Driver;
 
 
 use Phore\Core\Exception\NotFoundException;
+use Phore\FileSystem\PhoreFile;
+use Phore\ObjectStore\Type\ObjectStoreObject;
 use Psr\Http\Message\StreamInterface;
 
 class FileSystemObjectStoreDriver implements ObjectStoreDriver
@@ -94,6 +96,14 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
 
     public function walk(callable $walkFunction): bool
     {
-        //$this->rootDir->walk();
+        $this->rootDir->walkR(function(PhoreFile $file) use ($walkFunction) {
+            $metaFile = phore_file($file . self::META_SUFFIX);
+            $meta = [];
+            if ($metaFile->isFile())
+                $meta = $metaFile->get_json();
+            if (false === $walkFunction(new ObjectStoreObject($this, substr($file, strlen($this->rootDir)), $meta)))
+                return false;
+            
+        });
     }
 }
