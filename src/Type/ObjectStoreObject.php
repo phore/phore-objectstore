@@ -33,7 +33,7 @@ class ObjectStoreObject
 
     public function getObjectId() : string 
     {
-        $this->objectId;
+        return $this->objectId;
     }
     
     public function exists() : bool
