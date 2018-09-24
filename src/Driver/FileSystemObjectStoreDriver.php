@@ -103,7 +103,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
             $meta = [];
             if ($metaFile->isFile())
                 $meta = $metaFile->get_json();
-            if (false === $walkFunction(new ObjectStoreObject($this, substr($file, strlen($this->rootDir)), $meta)))
+            if (false === $walkFunction(new ObjectStoreObject($this, substr($file, strlen($this->rootDir)+1), $meta)))
                 return false;
             
         });
