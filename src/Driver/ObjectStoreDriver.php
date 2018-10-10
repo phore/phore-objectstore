@@ -46,5 +46,18 @@ interface ObjectStoreDriver
      */
     public function rename(string $objectId, string $newObjectId);
 
+    /**
+     * If object exists:
+     * -> Append data
+     *
+     * If not:
+     * -> Write data to new object file
+     *
+     * @param string $objectId
+     * @param string $data
+     * @return mixed
+     */
+    public function append(string $objectId, string $data);
+
     public function walk(callable $walkFunction) : bool;
 }

@@ -75,7 +75,11 @@ class ObjectStoreObject
             throw new \InvalidArgumentException("Cannot json-decode data from object '$this->objectId'");
         return $ret;
     }
-    
+
+    /**
+     * @return array
+     * @throws NotFoundException
+     */
     public function getYaml() : array
     {
         $data = $this->get();
@@ -131,7 +135,7 @@ class ObjectStoreObject
     /**
      * @param string $newObjectName
      * @return ObjectStoreObject
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function rename(string $newObjectName) : ObjectStoreObject
     {
@@ -140,13 +144,25 @@ class ObjectStoreObject
     }
 
     /**
-     * @throws ObjectNotFoundException
+     * @throws NotFoundException
      */
     public function remove()
     {
         $this->driver->remove($this->objectId);
     }
 
+
+    /**
+     * Append data to the object (atomic)
+     *
+     * If object does not exist: Create a new one.
+     *
+     * @param string $data
+     */
+    public function append(string $data)
+    {
+        $this->driver->append($this->objectId, $data);
+    }
 
 
 

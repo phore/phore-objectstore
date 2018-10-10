@@ -28,6 +28,7 @@
   "minimum-stability": "dev",
   "require-dev": {
     "nette/tester": "^2.1@dev",
-    "google/cloud-storage": "dev-master"
+    "google/cloud-storage": "dev-master",
+    "phore/filesystem": "dev-master"
   }
 }

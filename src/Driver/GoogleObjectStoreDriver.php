@@ -102,7 +102,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
                 $meta = $info["metadata"];
 
             return $stream;
-        } catch (NotFoundException $e) {
+        } catch (\Google\Cloud\Core\Exception\NotFoundException $e) {
             throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
         }
     }
@@ -176,5 +176,28 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
         } catch (\Google\Cloud\Core\Exception\NotFoundException $e) {
             throw new NotFoundException("Object '$objectId' not found for moving.");
         }
+    }
+
+    /**
+     * @param string $objectId
+     * @param string $data
+     * @return mixed
+     * @throws NotFoundException
+     */
+    public function append(string $objectId, string $data)
+    {
+        $tmpId = "/tmp/" . time() . "-" . sha1(microtime(true), uniqid());
+
+        $origObj = $this->bucket->object($objectId);
+        if ( ! $origObj->exists()) {
+            // Create new Object
+            $this->put($objectId, $data);
+            return true;
+
+        }
+        $this->put($tmpId, $data);
+        $this->bucket->compose([$origObj, $tmpId], $objectId);
+        $this->bucket->object($tmpId)->delete();
+
     }
 }

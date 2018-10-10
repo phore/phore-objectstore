@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "88372167c61f336f1341e26b52f7de01",
+    "content-hash": "d26ac9efce8bd3bb678eb3ffabafb11a",
     "packages": [
         {
             "name": "phore/core",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-core.git",
-                "reference": "9846619acf4a3d8e2f2003402cf31b250c9345e0"
+                "reference": "350cd32b5dccd49b115a5a53a55e5b79ee750b3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-core/zipball/9846619acf4a3d8e2f2003402cf31b250c9345e0",
-                "reference": "9846619acf4a3d8e2f2003402cf31b250c9345e0",
+                "url": "https://api.github.com/repos/phore/phore-core/zipball/350cd32b5dccd49b115a5a53a55e5b79ee750b3a",
+                "reference": "350cd32b5dccd49b115a5a53a55e5b79ee750b3a",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
                 }
             ],
             "description": "Phore core library",
-            "time": "2018-09-05T10:12:37+00:00"
+            "time": "2018-09-24T14:27:44+00:00"
         }
     ],
     "packages-dev": [
@@ -98,16 +98,16 @@
         },
         {
             "name": "google/auth",
-            "version": "v1.3.3",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-auth-library-php.git",
-                "reference": "af72b3f50420c801dc35cc07b1fa429ae027b847"
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
+                "reference": "196237248e636a3554a7d9e4dfddeb97f450ab5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/af72b3f50420c801dc35cc07b1fa429ae027b847",
-                "reference": "af72b3f50420c801dc35cc07b1fa429ae027b847",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/196237248e636a3554a7d9e4dfddeb97f450ab5c",
+                "reference": "196237248e636a3554a7d9e4dfddeb97f450ab5c",
                 "shasum": ""
             },
             "require": {
@@ -141,20 +141,20 @@
                 "google",
                 "oauth2"
             ],
-            "time": "2018-08-27T19:47:35+00:00"
+            "time": "2018-09-17T20:29:21+00:00"
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.23.2",
+            "version": "v1.23.7",
             "source": {
                 "type": "git",
-                "url": "https://github.com/GoogleCloudPlatform/google-cloud-php-core.git",
-                "reference": "d1b5f59b78c696484c3005d632b64308cbb6f6d2"
+                "url": "https://github.com/googleapis/google-cloud-php-core.git",
+                "reference": "f0f1d929285a43359bf65bec0135ce4c8d0d0503"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GoogleCloudPlatform/google-cloud-php-core/zipball/d1b5f59b78c696484c3005d632b64308cbb6f6d2",
-                "reference": "d1b5f59b78c696484c3005d632b64308cbb6f6d2",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/f0f1d929285a43359bf65bec0135ce4c8d0d0503",
+                "reference": "f0f1d929285a43359bf65bec0135ce4c8d0d0503",
                 "shasum": ""
             },
             "require": {
@@ -185,7 +185,7 @@
             "extra": {
                 "component": {
                     "id": "cloud-core",
-                    "target": "GoogleCloudPlatform/google-cloud-php-core.git",
+                    "target": "googleapis/google-cloud-php-core.git",
                     "path": "Core",
                     "entry": "src/ServiceBuilder.php"
                 }
@@ -200,20 +200,20 @@
                 "Apache-2.0"
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
-            "time": "2018-08-30T15:45:55+00:00"
+            "time": "2018-10-08T13:57:02+00:00"
         },
         {
             "name": "google/cloud-storage",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/GoogleCloudPlatform/google-cloud-php-storage.git",
-                "reference": "5ee955f9e19984659ec74ba2331841a53bca3c13"
+                "url": "https://github.com/googleapis/google-cloud-php-storage.git",
+                "reference": "3db9ba4fa8ac8749781c4ace05142375588ea75a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GoogleCloudPlatform/google-cloud-php-storage/zipball/5ee955f9e19984659ec74ba2331841a53bca3c13",
-                "reference": "5ee955f9e19984659ec74ba2331841a53bca3c13",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/3db9ba4fa8ac8749781c4ace05142375588ea75a",
+                "reference": "3db9ba4fa8ac8749781c4ace05142375588ea75a",
                 "shasum": ""
             },
             "require": {
@@ -235,7 +235,7 @@
             "extra": {
                 "component": {
                     "id": "cloud-storage",
-                    "target": "GoogleCloudPlatform/google-cloud-php-storage.git",
+                    "target": "googleapis/google-cloud-php-storage.git",
                     "path": "Storage",
                     "entry": "src/StorageClient.php"
                 }
@@ -250,7 +250,7 @@
                 "Apache-2.0"
             ],
             "description": "Cloud Storage Client for PHP",
-            "time": "2018-08-20T17:02:50+00:00"
+            "time": "2018-10-08T13:57:02+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -258,12 +258,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "5c7a5c524e556113e7f8685e6880cbc4090c798d"
+                "reference": "2798c457a4fc5a9bda4587ea0da9b177e22aff5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/5c7a5c524e556113e7f8685e6880cbc4090c798d",
-                "reference": "5c7a5c524e556113e7f8685e6880cbc4090c798d",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/2798c457a4fc5a9bda4587ea0da9b177e22aff5a",
+                "reference": "2798c457a4fc5a9bda4587ea0da9b177e22aff5a",
                 "shasum": ""
             },
             "require": {
@@ -315,7 +315,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-08-08T04:37:00+00:00"
+            "time": "2018-10-08T11:42:37+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -518,12 +518,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tester.git",
-                "reference": "ca80e7bb1210c5e2141925b8f74ba7cf43500843"
+                "reference": "6b3e881e7c5ffb596a5dc25ab6e4efbbe27eb926"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tester/zipball/ca80e7bb1210c5e2141925b8f74ba7cf43500843",
-                "reference": "ca80e7bb1210c5e2141925b8f74ba7cf43500843",
+                "url": "https://api.github.com/repos/nette/tester/zipball/6b3e881e7c5ffb596a5dc25ab6e4efbbe27eb926",
+                "reference": "6b3e881e7c5ffb596a5dc25ab6e4efbbe27eb926",
                 "shasum": ""
             },
             "require": {
@@ -572,7 +572,50 @@
                 "testing",
                 "unit"
             ],
-            "time": "2018-08-27T18:21:48+00:00"
+            "time": "2018-10-10T12:35:10+00:00"
+        },
+        {
+            "name": "phore/filesystem",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phore/phore-filesystem.git",
+                "reference": "9018820acfd4545f88081bd4070b2ead7f5ebd47"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phore/phore-filesystem/zipball/9018820acfd4545f88081bd4070b2ead7f5ebd47",
+                "reference": "9018820acfd4545f88081bd4070b2ead7f5ebd47",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-yaml": "*",
+                "php": ">7.1"
+            },
+            "require-dev": {
+                "nette/tester": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Phore\\FileSystem\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Leuffen",
+                    "email": "leuffen@continue.de"
+                }
+            ],
+            "time": "2018-09-24T11:37:42+00:00"
         },
         {
             "name": "psr/cache",
@@ -807,7 +850,8 @@
     "stability-flags": {
         "phore/core": 20,
         "nette/tester": 20,
-        "google/cloud-storage": 20
+        "google/cloud-storage": 20,
+        "phore/filesystem": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

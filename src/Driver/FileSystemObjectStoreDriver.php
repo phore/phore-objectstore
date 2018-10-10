@@ -108,4 +108,15 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
             
         });
     }
+
+    /**
+     * @param string $objectId
+     * @param string $data
+     * @return mixed
+     * @throws NotFoundException
+     */
+    public function append(string $objectId, string $appendData)
+    {
+        $this->rootDir->withSubPath($objectId)->asFile()->append_content($appendData);
+    }
 }
