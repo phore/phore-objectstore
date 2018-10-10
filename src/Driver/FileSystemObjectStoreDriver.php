@@ -62,7 +62,10 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         if ($metaFile->isFile())
             $meta = $metaFile->get_json();
 
-        return $this->rootDir->withSubPath($objectId)->asFile()->get_contents();
+        $file = $this->rootDir->withSubPath($objectId)->asFile()
+        if ( ! $file->isFile())
+            throw new NotFoundException("Object '$objectId' not existing.", 0 );
+        return $file->get_contents();
     }
 
     /**
