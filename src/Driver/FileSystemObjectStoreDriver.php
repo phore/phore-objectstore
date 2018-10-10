@@ -48,6 +48,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
 
     public function putStream(string $objectId, $ressource, array $metadata = null)
     {
+        throw new \InvalidArgumentException("Not implemented yet.");
         // TODO: Implement putStream() method.
     }
 
@@ -75,6 +76,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
+        throw new \InvalidArgumentException("Not implemented yet.");
         // TODO: Implement getStream() method.
     }
 
@@ -98,6 +100,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     public function rename(string $objectId, string $newObjectId)
     {
+        throw new \InvalidArgumentException("Not implemented yet.");
         // TODO: Implement rename() method.
     }
 
