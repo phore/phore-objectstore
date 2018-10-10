@@ -37,7 +37,11 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
 
     public function put(string $objectId, $content, array $metadata = null)
     {
-        $this->rootDir->withSubPath($objectId)->asFile()->set_contents($content);
+        $file = $this->rootDir->withSubPath($objectId)->asFile();
+        $dir = $file->getDirname()->asDirectory();
+        if ( ! $dir->isDirectory())
+            $file->getDirname()->asDirectory()->mkdir();
+        $file->set_contents($content);
         if ($metadata !== null)
             $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile()->set_json($metadata);
     }
