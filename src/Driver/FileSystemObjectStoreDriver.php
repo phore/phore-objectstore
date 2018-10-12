@@ -127,6 +127,11 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     public function append(string $objectId, string $appendData)
     {
-        $this->rootDir->withSubPath($objectId)->asFile()->append_content($appendData);
+        $targetFile = $this->rootDir->withSubPath($objectId)->asFile();
+
+        if ($targetFile->exists())
+            $targetFile->append_content($appendData);
+        else
+            $targetFile->set_contents($appendData);
     }
 }
