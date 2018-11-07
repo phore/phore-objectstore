@@ -186,14 +186,17 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function append(string $objectId, string $data)
     {
-        $tmpId = "/tmp/" . time() . "-" . sha1(microtime(true), uniqid());
+        $ext = pathinfo($objectId)["extension"];
+        if ($ext != "") {
+            $ext = ".$ext";
+        }
+        $tmpId = "/tmp/" . time() . "-" . sha1(microtime(true) . uniqid()) . "$ext";
 
         $origObj = $this->bucket->object($objectId);
         if ( ! $origObj->exists()) {
             // Create new Object
             $this->put($objectId, $data);
             return true;
-
         }
         $this->put($tmpId, $data);
         $this->bucket->compose([$origObj, $tmpId], $objectId);
