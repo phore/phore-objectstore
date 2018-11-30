@@ -40,7 +40,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         $file = $this->rootDir->withSubPath($objectId)->asFile();
         $dir = $file->getDirname()->asDirectory();
         if ( ! $dir->isDirectory())
-            $file->getDirname()->asDirectory()->mkdir();
+            $dir->mkdir();
         $file->set_contents($content);
         if ($metadata !== null)
             $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile()->set_json($metadata);
