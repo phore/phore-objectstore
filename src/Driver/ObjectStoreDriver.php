@@ -59,5 +59,21 @@ interface ObjectStoreDriver
      */
     public function append(string $objectId, string $data);
 
+    /**
+     *
+     *
+     * @param string $objectId
+     * @return array        Empty array if object not found
+     */
+    public function getMeta(string $objectId): array;
+
+    /**
+     * @param string $objectId
+     * @param array $metadata
+     * @return mixed
+     */
+    public function setMeta(string $objectId, array $metadata);
+
+
     public function walk(callable $walkFunction) : bool;
 }

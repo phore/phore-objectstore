@@ -24,6 +24,8 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
 
     public function __construct(string $rootDir)
     {
+        if (!class_exists('\Phore\FileSystem\PhoreDirectory'))
+            throw new \InvalidArgumentException("PhoreFilesystem is currently not installed. Install phore/filesystem to use FileSystemObjectStoreDriver");
         $this->rootDir = phore_dir($rootDir);
     }
 
@@ -76,8 +78,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
-        throw new \InvalidArgumentException("Not implemented yet.");
-        // TODO: Implement getStream() method.
+        return $this->rootDir->withSubPath($objectId)->asFile()->fopen("r");
     }
 
     /**
@@ -133,5 +134,34 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
             $targetFile->append_content($appendData);
         else
             $targetFile->set_contents($appendData);
+    }
+
+    /**
+     *
+     *
+     * @param string $objectId
+     * @return array        Empty array if object not found
+     */
+    public function getMeta(string $objectId) : array
+    {
+        $metaFile = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
+        if ($metaFile->isFile())
+            return $metaFile->get_json();
+        return [];
+    }
+
+    /**
+     * @param string $objectId
+     * @param array $metadata
+     * @return mixed
+     */
+    public function setMeta(string $objectId, array $metadata)
+    {
+        $file = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
+        $dir = $file->getDirname()->asDirectory();
+        if ( ! $dir->isDirectory())
+            $dir->mkdir();
+
+        $file->set_json($metadata);
     }
 }
