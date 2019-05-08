@@ -26,7 +26,10 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     {
         if (!class_exists('\Phore\FileSystem\PhoreDirectory'))
             throw new \InvalidArgumentException("PhoreFilesystem is currently not installed. Install phore/filesystem to use FileSystemObjectStoreDriver");
-        $this->rootDir = phore_dir($rootDir);
+        $rootDirAbs = realpath($rootDir);
+        if ($rootDirAbs === false)
+            throw new \InvalidArgumentException("Root directory '$rootDir' not accessible");
+        $this->rootDir = phore_dir($rootDirAbs);
     }
 
 
