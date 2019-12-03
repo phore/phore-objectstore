@@ -4,7 +4,9 @@
 namespace Phore\ObjectStore\Driver;
 
 
+use http\Exception\InvalidArgumentException;
 use Phore\Core\Exception\NotFoundException;
+use Phore\FileSystem\Exception\FileAccessException;
 use Phore\HttpClient\Ex\PhoreHttpRequestException;
 use Psr\Http\Message\StreamInterface;
 
@@ -94,19 +96,38 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
 
     public function put(string $objectId, $content, array $metadata = null)
     {
+        if($metadata === null) {
+            try {
+                phore_http_request(UPLOAD_URI . "?uploadType=media&name={object}", ['bucket' => $this->bucketName, 'object' => $objectId])
+                    ->withBearerAuth($this->accessToken)
+                    ->withPostBody($content)->withHeaders(['Content-Type' => $this->_getContentType($objectId)])->send();
+            } catch (PhoreHttpRequestException $ex) {
+                return false;
+            }
+            return true;
+        }
+        $meta['name']=$objectId;
+        $meta['metadata'] = $metadata;
+        if (is_array($content) || is_object($content)) {
+            $content = phore_json_encode($content);
+        }
+        $meta = phore_json_encode($meta);
+        $delimiter = "delimiter";
+        $body = "--$delimiter\nContent-Type: application/json; charset=UTF-8\n\n$meta\n\n--$delimiter\nContent-Type: {$this->_getContentType($objectId)}\n\n$content\n--$delimiter--";
         try {
-            phore_http_request(UPLOAD_URI . "?uploadType=media&name={object}", ['bucket' => $this->bucketName, 'object' => $objectId])
+            phore_http_request(UPLOAD_URI . "?uploadType=multipart", ['bucket' => $this->bucketName])
                 ->withBearerAuth($this->accessToken)
-                ->withPostBody($content)->withHeaders(['Content-Type' => $this->_getContentType($objectId)])->send();
+                ->withPostBody($body)->withHeaders(['Content-Type' => "multipart/related; boundary=$delimiter"])->send();
         } catch (PhoreHttpRequestException $ex) {
             return false;
         }
         return true;
+
     }
 
     public function putStream(string $objectId, $ressource, array $metadata = null)
     {
-        // TODO: Implement putStream() method.
+        throw new \InvalidArgumentException("Method not implemented.");
     }
 
     /**
@@ -119,9 +140,8 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                 ->withBearerAuth($this->accessToken)->send()->getBody();
         } catch (PhoreHttpRequestException $ex) {
             if($ex->getCode() === 404) {
-                return false;
+                throw new NotFoundException($ex->getMessage(), $ex->getCode(), $ex);
             }
-            throw $ex;
         }
     }
 
@@ -130,15 +150,23 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
-        // TODO: Implement getStream() method.
+        throw new \InvalidArgumentException("Method not implemented.");
     }
 
     /**
      * @inheritDoc
+     * @throws PhoreHttpRequestException
      */
     public function remove(string $objectId)
     {
-        // TODO: Implement remove() method.
+        try {
+            return phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
+                ->withBearerAuth($this->accessToken)->withMethod('DELETE')->send()->getBody();
+        } catch (PhoreHttpRequestException $ex) {
+            if($ex->getCode() === 404) {
+                throw new NotFoundException($ex->getMessage(), $ex->getCode(), $ex);
+            }
+        }
     }
 
     /**
@@ -146,15 +174,40 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function rename(string $objectId, string $newObjectId)
     {
-        // TODO: Implement rename() method.
+        if($this->has($newObjectId)){
+            throw new \InvalidArgumentException("Cannot rename '$objectId'. ObjectId '$newObjectId' already in use.");
+        }
+        return phore_http_request(DOWNLOAD_URI."/copyTo/b/{bucket}/o/{newObjectId}",
+            ['bucket' => $this->bucketName, 'object' => $objectId, 'newObjectId' => $newObjectId]
+        )->withBearerAuth($this->accessToken)->withPostBody()->send()->getBodyJson();
+
     }
 
     /**
      * @inheritDoc
+     * @throws PhoreHttpRequestException
+     * @throws NotFoundException
      */
     public function append(string $objectId, string $data)
     {
-        // TODO: Implement append() method.
+        $meta = $this->getMeta($objectId);
+        if($meta === []) {
+            $this->put($objectId, $data);
+            return true;
+        }
+
+        $ext = pathinfo($objectId)["extension"];
+        if ($ext != "") {
+            $ext = ".$ext";
+        }
+        $tmpId = "/tmp/" . time() . "-" . sha1(microtime(true) . uniqid()) . "$ext";
+        $this->put($tmpId, $data);
+        $body['kind'] = "storage#composeRequest";
+        $body['sourceObjects'] = [['name' => $objectId], ['name' => $tmpId]];
+        $body['destination'] = $meta;
+
+        return phore_http_request(DOWNLOAD_URI . "/compose", ['bucket' => $this->bucketName, 'object' => $objectId])
+            ->withBearerAuth($this->accessToken)->withPostBody($body)->send()->getBodyJson();
     }
 
     /**
@@ -162,14 +215,14 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function getMeta(string $objectId): array
     {
+
         try {
             return phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
                 ->withBearerAuth($this->accessToken)->send()->getBodyJson();
         } catch (PhoreHttpRequestException $ex) {
             if($ex->getCode() === 404) {
-                return false;
+                return [];
             }
-            throw $ex;
         }
     }
 
@@ -178,11 +231,11 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function setMeta(string $objectId, array $metadata)
     {
-        // TODO: Implement setMeta() method.
+        throw new \InvalidArgumentException("Metadata cannot be set. Method not implemented.");
     }
 
     public function walk(callable $walkFunction): bool
     {
-        // TODO: Implement walk() method.
+        throw new \InvalidArgumentException("Method not implemented.");
     }
 }
