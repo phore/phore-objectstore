@@ -12,7 +12,7 @@
     "phore/core": "dev-master",
     "ext-json": "*",
     "ext-yaml": "*",
-    "phore/http-client": "dev-master",
+    "phore/http-client": "dev-spooling-test",
     "ext-openssl": "*",
     "phpunit/phpunit": "8.5.x-dev"
   },

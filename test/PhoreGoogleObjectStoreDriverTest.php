@@ -27,8 +27,8 @@ class PhoreGoogleObjectStoreDriverTest extends TestCase
 
     public static function tearDownAfterClass(): void
     {
-        self::$driver->remove("testMeta.txt");
-        self::$driver->remove("testMetaRenamed.txt");
+        //self::$driver->remove("testMeta.txt");
+        //self::$driver->remove("testMetaRenamed.txt");
     }
 
     public function testAsync()

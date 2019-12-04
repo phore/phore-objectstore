@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e5fb7886d1471e6dad2ccff47a9efe98",
+    "content-hash": "ea81ff0afc7f5c1de78995b0a6021b11",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -269,23 +269,23 @@
         },
         {
             "name": "phore/http-client",
-            "version": "dev-master",
+            "version": "dev-spooling-test",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-http-client.git",
-                "reference": "722d9d8aa067047e43fe3a2a1daca1c73d8d4bfa"
+                "reference": "d48ed1002d90d701cd0d27a0e38ca3a0ebe760c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/722d9d8aa067047e43fe3a2a1daca1c73d8d4bfa",
-                "reference": "722d9d8aa067047e43fe3a2a1daca1c73d8d4bfa",
+                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/d48ed1002d90d701cd0d27a0e38ca3a0ebe760c7",
+                "reference": "d48ed1002d90d701cd0d27a0e38ca3a0ebe760c7",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-http": "*",
                 "ext-json": "*",
-                "phore/core": "dev-master",
+                "phore/core": "*",
                 "php": ">=7.1"
             },
             "require-dev": {
@@ -322,7 +322,7 @@
                 "Keyword1",
                 "Keyword2"
             ],
-            "time": "2019-12-04T11:17:17+00:00"
+            "time": "2019-12-04T14:33:46+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
