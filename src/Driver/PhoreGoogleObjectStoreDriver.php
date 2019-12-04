@@ -194,6 +194,8 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         } catch (PhoreHttpRequestException $ex) {
             if($ex->getCode() === 404) {
                 throw new NotFoundException($ex->getMessage(), $ex->getCode(), $ex);
+            } else {
+                throw $ex;
             }
         }
     }
@@ -222,6 +224,8 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         } catch (PhoreHttpRequestException $ex) {
             if($ex->getCode() === 404) {
                 throw new NotFoundException($ex->getMessage(), $ex->getCode(), $ex);
+            } else {
+                throw $ex;
             }
         }
     }
@@ -267,8 +271,15 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $body['sourceObjects'] = [['name' => $objectId], ['name' => $tmpId]];
         $body['destination'] = $meta;
 
-        return phore_http_request(DOWNLOAD_URI . "/compose", ['bucket' => $this->bucketName, 'object' => $objectId])
+        $objectMeta = phore_http_request(DOWNLOAD_URI . "/compose", ['bucket' => $this->bucketName, 'object' => $objectId])
             ->withBearerAuth($this->accessToken)->withPostBody($body)->send()->getBodyJson();
+
+        $this->remove($tmpId);
+
+        if(phore_pluck('name', $objectMeta) === $objectId) {
+            return true;
+        }
+        return false;
     }
 
     /**

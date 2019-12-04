@@ -100,8 +100,7 @@ class PhoreGoogleObjectStoreDriverTest extends TestCase
     public function testAppendToExisting ()
     {
         $result = self::$driver->append("testMeta.txt", "test append 2");
-        $this->assertIsArray($result);
-        $this->assertEquals( "testMeta.txt", $result['name']);
+        $this->assertTrue( $result);
     }
 
     public function testRenameExistingToNonExisting()
