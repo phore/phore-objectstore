@@ -8,4 +8,4 @@ command:
     - "composer update"
 
   test:
-    - "vendor/bin/tester -C tests/"
+    - "phpunit test/"

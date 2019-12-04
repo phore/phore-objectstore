@@ -11,7 +11,10 @@
     "php": ">=7.1",
     "phore/core": "dev-master",
     "ext-json": "*",
-    "ext-yaml": "*"
+    "ext-yaml": "*",
+    "phore/http-client": "dev-master",
+    "ext-openssl": "*",
+    "phpunit/phpunit": "8.5.x-dev"
   },
   "suggest": {
     "google/cloud-storage": "If using Google Cloud services",
