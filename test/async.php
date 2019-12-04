@@ -31,10 +31,10 @@ $ok = 0;
 $token = $driver->accessToken;
 
 
-$driver->put("/test.dat", "some content");
+$driver->put("test.dat", "some content");
 
 for ($i=0; $i<100; $i++) {
-    $queue->queue(phore_http_request("https://storage.googleapis.com/storage/v1/b/phore-objectstore-unit-testing/o/DO_NOT_TOUCH_test_2019-12-02.txt")
+    $queue->queue(phore_http_request("https://storage.googleapis.com/storage/v1/b/phore-test2/o/test.dat")
         ->withBearerAuth($token)->withTimeout(10,100))->then(
         function(PhoreHttpResponse $response) use (&$data, &$ok)  {
             phore_out("OK$ok:");
