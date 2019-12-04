@@ -3,26 +3,48 @@
 
 namespace Phore\ObjectStore\Driver;
 
-
-use http\Exception\InvalidArgumentException;
 use Phore\Core\Exception\NotFoundException;
-use Phore\FileSystem\Exception\FileAccessException;
 use Phore\HttpClient\Ex\PhoreHttpRequestException;
 use Psr\Http\Message\StreamInterface;
+
 
 const BASE_URI = 'https://storage.googleapis.com/storage/v1/';
 const UPLOAD_URI = "https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o";//{?query*}';
 const DOWNLOAD_URI = "https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}";//{?query*}';
 
+/**
+ * Class PhoreGoogleObjectStoreDriver
+ * @package Phore\ObjectStore\Driver
+ */
 class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
 {
 
+    /**
+     * @var string
+     */
     private $base_url = "https://storage.googleapis.com/storage/v1";
 
+    /**
+     * @var string
+     */
     private $bucketName;
+    /**
+     * @var array|\Phore\FileSystem\PhoreFile
+     */
     private $config;
+    /**
+     * @var string
+     */
     private $accessToken;
 
+    /**
+     * PhoreGoogleObjectStoreDriver constructor.
+     * @param string $configFilePath
+     * @param string $bucketName
+     * @throws \Phore\FileSystem\Exception\FileNotFoundException
+     * @throws \Phore\FileSystem\Exception\FileParsingException
+     * @throws PhoreHttpRequestException
+     */
     public function __construct(string $configFilePath, string $bucketName)
     {
         $this->config = phore_file($configFilePath)->get_json();
@@ -32,11 +54,19 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $this->accessToken = $this->_getJwt()['access_token'];
     }
 
+    /**
+     * @param $input
+     * @return mixed
+     */
     protected function _base64Enc($input)
     {
         return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($input));
     }
 
+    /**
+     * @return array
+     * @throws PhoreHttpRequestException
+     */
     private function _getJwt()
     {
 
@@ -61,6 +91,11 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         return phore_http_request("https://oauth2.googleapis.com/token")->withPostFormBody(["grant_type" => "urn:ietf:params:oauth:grant-type:jwt-bearer", "assertion" => $signedToken])->send()->getBodyJson();
     }
 
+    /**
+     * @param string $objectId
+     * @return bool
+     * @throws PhoreHttpRequestException
+     */
     public function has(string $objectId): bool
     {
         try {
@@ -76,6 +111,10 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         return true;
     }
 
+    /**
+     * @param $objectId
+     * @return string
+     */
     private function _getContentType($objectId): string
     {
         switch (pathinfo($objectId)['extension']) {
@@ -94,6 +133,12 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         }
     }
 
+    /**
+     * @param string $objectId
+     * @param $content
+     * @param array|null $metadata
+     * @return bool
+     */
     public function put(string $objectId, $content, array $metadata = null)
     {
         if($metadata === null) {
@@ -125,13 +170,21 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
 
     }
 
+    /**
+     * @param string $objectId
+     * @param $ressource
+     * @param array|null $metadata
+     */
     public function putStream(string $objectId, $ressource, array $metadata = null)
     {
         throw new \InvalidArgumentException("Method not implemented.");
     }
 
     /**
-     * @inheritDoc
+     * @param string $objectId
+     * @param array|null $meta
+     * @return string
+     * @throws NotFoundException
      */
     public function get(string $objectId, array &$meta = null): string
     {
@@ -145,8 +198,11 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         }
     }
 
+
     /**
-     * @inheritDoc
+     * @param string $objectId
+     * @param array|null $meta
+     * @return StreamInterface
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
@@ -154,8 +210,9 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     }
 
     /**
-     * @inheritDoc
-     * @throws PhoreHttpRequestException
+     * @param string $objectId
+     * @return string
+     * @throws NotFoundException
      */
     public function remove(string $objectId)
     {
@@ -170,7 +227,10 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     }
 
     /**
-     * @inheritDoc
+     * @param string $objectId
+     * @param string $newObjectId
+     * @return array
+     * @throws PhoreHttpRequestException
      */
     public function rename(string $objectId, string $newObjectId)
     {
@@ -184,9 +244,10 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     }
 
     /**
-     * @inheritDoc
+     * @param string $objectId
+     * @param string $data
+     * @return array|bool|mixed
      * @throws PhoreHttpRequestException
-     * @throws NotFoundException
      */
     public function append(string $objectId, string $data)
     {
@@ -211,7 +272,8 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     }
 
     /**
-     * @inheritDoc
+     * @param string $objectId
+     * @return array
      */
     public function getMeta(string $objectId): array
     {
@@ -227,13 +289,19 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     }
 
     /**
-     * @inheritDoc
+     * @param string $objectId
+     * @param array $metadata
+     * @return mixed|void
      */
     public function setMeta(string $objectId, array $metadata)
     {
         throw new \InvalidArgumentException("Metadata cannot be set. Method not implemented.");
     }
 
+    /**
+     * @param callable $walkFunction
+     * @return bool
+     */
     public function walk(callable $walkFunction): bool
     {
         throw new \InvalidArgumentException("Method not implemented.");
