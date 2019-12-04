@@ -129,9 +129,10 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     {
         $targetFile = $this->rootDir->withSubPath($objectId)->asFile();
 
-        if ($targetFile->exists())
+        if ($targetFile->exists()) {
             $targetFile->append_content($appendData);
-        else
+        } else {
             $targetFile->set_contents($appendData);
+        }
     }
 }
