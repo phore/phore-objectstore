@@ -9,7 +9,7 @@
   ],
   "require": {
     "php": ">=7.1",
-    "phore/core": "dev-master",
+    "phore/core": "*",
     "ext-json": "*",
     "ext-yaml": "*"
   },
@@ -28,7 +28,7 @@
   "minimum-stability": "dev",
   "require-dev": {
     "nette/tester": "^2.1@dev",
-    "google/cloud-storage": "dev-master",
-    "phore/filesystem": "dev-master"
+    "google/cloud-storage": "*",
+    "phore/filesystem": "*"
   }
 }
