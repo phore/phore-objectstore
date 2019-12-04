@@ -35,7 +35,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     /**
      * @var string
      */
-    private $accessToken;
+    public $accessToken;
 
     /**
      * PhoreGoogleObjectStoreDriver constructor.

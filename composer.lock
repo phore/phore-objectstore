@@ -273,12 +273,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-http-client.git",
-                "reference": "6d9144aca4407a0780d66d406aa64a2d7d5be531"
+                "reference": "722d9d8aa067047e43fe3a2a1daca1c73d8d4bfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/6d9144aca4407a0780d66d406aa64a2d7d5be531",
-                "reference": "6d9144aca4407a0780d66d406aa64a2d7d5be531",
+                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/722d9d8aa067047e43fe3a2a1daca1c73d8d4bfa",
+                "reference": "722d9d8aa067047e43fe3a2a1daca1c73d8d4bfa",
                 "shasum": ""
             },
             "require": {
@@ -322,7 +322,7 @@
                 "Keyword1",
                 "Keyword2"
             ],
-            "time": "2019-12-03T17:57:32+00:00"
+            "time": "2019-12-04T11:17:17+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
