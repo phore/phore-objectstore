@@ -24,7 +24,12 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
 
     public function __construct(string $rootDir)
     {
-        $this->rootDir = phore_dir($rootDir);
+        if (!class_exists('\Phore\FileSystem\PhoreDirectory'))
+            throw new \InvalidArgumentException("PhoreFilesystem is currently not installed. Install phore/filesystem to use FileSystemObjectStoreDriver");
+        $rootDirAbs = realpath($rootDir);
+        if ($rootDirAbs === false)
+            throw new \InvalidArgumentException("Root directory '$rootDir' not accessible");
+        $this->rootDir = phore_dir($rootDirAbs);
     }
 
 
@@ -40,7 +45,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         $file = $this->rootDir->withSubPath($objectId)->asFile();
         $dir = $file->getDirname()->asDirectory();
         if ( ! $dir->isDirectory())
-            $file->getDirname()->asDirectory()->mkdir();
+            $dir->mkdir();
         $file->set_contents($content);
         if ($metadata !== null)
             $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile()->set_json($metadata);
@@ -76,8 +81,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
-        throw new \InvalidArgumentException("Not implemented yet.");
-        // TODO: Implement getStream() method.
+        return $this->rootDir->withSubPath($objectId)->asFile()->fopen("r");
     }
 
     /**
@@ -134,5 +138,34 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         } else {
             $targetFile->set_contents($appendData);
         }
+    }
+
+    /**
+     *
+     *
+     * @param string $objectId
+     * @return array        Empty array if object not found
+     */
+    public function getMeta(string $objectId) : array
+    {
+        $metaFile = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
+        if ($metaFile->isFile())
+            return $metaFile->get_json();
+        return [];
+    }
+
+    /**
+     * @param string $objectId
+     * @param array $metadata
+     * @return mixed
+     */
+    public function setMeta(string $objectId, array $metadata)
+    {
+        $file = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
+        $dir = $file->getDirname()->asDirectory();
+        if ( ! $dir->isDirectory())
+            $dir->mkdir();
+
+        $file->set_json($metadata);
     }
 }

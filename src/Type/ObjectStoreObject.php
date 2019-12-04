@@ -108,7 +108,7 @@ class ObjectStoreObject
         return $this;
     }
 
-    public function getMeta($key=null, $default=null) : array
+    public function getMeta($key=null, $default=null)
     {
         if ( ! $this->metaData)
             $this->metaData = $this->driver->getMeta($this->objectId);
