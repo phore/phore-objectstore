@@ -273,12 +273,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-http-client.git",
-                "reference": "d975ef804c69dde4f93f11e8509e3b1296fef7d6"
+                "reference": "6d9144aca4407a0780d66d406aa64a2d7d5be531"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/d975ef804c69dde4f93f11e8509e3b1296fef7d6",
-                "reference": "d975ef804c69dde4f93f11e8509e3b1296fef7d6",
+                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/6d9144aca4407a0780d66d406aa64a2d7d5be531",
+                "reference": "6d9144aca4407a0780d66d406aa64a2d7d5be531",
                 "shasum": ""
             },
             "require": {
@@ -290,6 +290,7 @@
             },
             "require-dev": {
                 "phore/cache": "*",
+                "phore/filesystem": "*",
                 "phore/objectstore": "*",
                 "phpunit/phpunit": "*"
             },
@@ -321,7 +322,7 @@
                 "Keyword1",
                 "Keyword2"
             ],
-            "time": "2019-11-29T11:17:46+00:00"
+            "time": "2019-12-03T17:57:32+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -789,12 +790,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "9363b6863e0ee0e6564c7d63aa6f52441622abfc"
+                "reference": "b9e8c1ff9c262b7951f7f1fb03aeda0093242f7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9363b6863e0ee0e6564c7d63aa6f52441622abfc",
-                "reference": "9363b6863e0ee0e6564c7d63aa6f52441622abfc",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b9e8c1ff9c262b7951f7f1fb03aeda0093242f7b",
+                "reference": "b9e8c1ff9c262b7951f7f1fb03aeda0093242f7b",
                 "shasum": ""
             },
             "require": {
@@ -864,7 +865,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-12-03T00:17:51+00:00"
+            "time": "2019-12-03T16:11:17+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1886,12 +1887,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "df36d8dae3979cf927d5bbbed6f0427f39aadfec"
+                "reference": "dd23412b4a6d45f11f0ea116a2108920f1a97ac8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/df36d8dae3979cf927d5bbbed6f0427f39aadfec",
-                "reference": "df36d8dae3979cf927d5bbbed6f0427f39aadfec",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/dd23412b4a6d45f11f0ea116a2108920f1a97ac8",
+                "reference": "dd23412b4a6d45f11f0ea116a2108920f1a97ac8",
                 "shasum": ""
             },
             "require": {
@@ -1944,7 +1945,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2019-10-30T11:22:04+00:00"
+            "time": "2019-12-03T09:24:32+00:00"
         },
         {
             "name": "guzzlehttp/promises",
