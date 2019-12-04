@@ -182,7 +182,6 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $objectId
      * @param string $data
      * @return mixed
-     * @throws NotFoundException
      */
     public function append(string $objectId, string $data)
     {
