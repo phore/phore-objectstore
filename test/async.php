@@ -23,11 +23,11 @@ $driver = new PhoreGoogleObjectStoreDriver($googleSecret, "phore-test2");
 $url = "https://storage.googleapis.com/storage/v1/b/phore-test2/o/test.dat";
 
 
-#$driver = new PhoreGoogleObjectStoreDriver($googleSecret, "phore-objectstore-unit-testing");
-#$url = "https://storage.googleapis.com/storage/v1/b/phore-objectstore-unit-testing/o/test.dat";
+$driver = new PhoreGoogleObjectStoreDriver($googleSecret, "phore-objectstore-unit-testing");
+$url = "https://storage.googleapis.com/storage/v1/b/phore-objectstore-unit-testing/o/test.dat";
 
+#$url="https://ulan.talpa.io";
 
-$queue = new PhoreHttpAsyncQueue();
 
 //$queue->queue(phore_http_request("http://localhost/test.php?case=wait"));
 
@@ -39,20 +39,29 @@ $token = $driver->accessToken;
 
 
 
-
+phore_out("put");
 $driver->put("test.dat", "some content");
 
+
+
+
 for ($iv=0; $iv<10; $iv++) {
+
     phore_out("Start $iv");
-    for ($i = 0; $i < 500; $i++) {
+    $queue = new PhoreHttpAsyncQueue();
+    for ($i = 0; $i < 100; $i++) {
         $queue->queue(phore_http_request($url)
-            ->withBearerAuth($token)->withTimeout(10, 100))->then(
+            ->withBearerAuth($token)->withSslVerify(false)->withTimeout(15, 30))->then(
             function (PhoreHttpResponse $response) use (&$data, &$ok) {
                 #phore_out("OK$ok:");
                 $ok++;
 
             },
             function (PhoreHttpRequestException $ex) use (&$err) {
+                $respons = $ex->getResponse();
+                if ($respons instanceof PhoreHttpResponse)
+                    print_r ($respons->getHeaders());
+
                 phore_out("ERR$err:" . $ex->getMessage());
                 $err++;
             });

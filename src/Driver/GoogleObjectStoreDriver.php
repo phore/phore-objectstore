@@ -74,15 +74,22 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function get(string $objectId, array &$meta = null): string
     {
-        try {
-            $object = $this->bucket->object($objectId);
-            $data = $object->downloadAsString();
-            $info = $object->info();
-            if (isset ($info["metadata"]))
-                $meta = $info["metadata"];
-            return $data;
-        } catch (\Google\Cloud\Core\Exception\NotFoundException $e) {
-            throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
+        for ($i=0; $i<10; $i++) {
+            try {
+                $object = $this->bucket->object($objectId);
+                $data = $object->downloadAsString();
+                $info = $object->info();
+                if (isset ($info["metadata"]))
+                    $meta = $info["metadata"];
+                return $data;
+            } catch (\Google\Cloud\Core\Exception\NotFoundException $e) {
+                throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
+            } catch (\Exception $e) {
+                if ($i > 2)
+                    throw $e;
+                usleep(1000);
+                continue;
+            }
         }
     }
 
