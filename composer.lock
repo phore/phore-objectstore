@@ -273,12 +273,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-http-client.git",
-                "reference": "5992e0242288830657160d762cc3a70ef37a6ac2"
+                "reference": "b35f65aacbe04bad3dee91733a74d0fc81f414a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/5992e0242288830657160d762cc3a70ef37a6ac2",
-                "reference": "5992e0242288830657160d762cc3a70ef37a6ac2",
+                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/b35f65aacbe04bad3dee91733a74d0fc81f414a4",
+                "reference": "b35f65aacbe04bad3dee91733a74d0fc81f414a4",
                 "shasum": ""
             },
             "require": {
@@ -322,7 +322,7 @@
                 "Keyword1",
                 "Keyword2"
             ],
-            "time": "2019-12-04T21:21:11+00:00"
+            "time": "2019-12-04T16:37:39+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -790,12 +790,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "f40603d31c990d333c060314031730f1188b34ea"
+                "reference": "5e9c970b76d6f3a5b0718256a75ad3cb89e8659b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f40603d31c990d333c060314031730f1188b34ea",
-                "reference": "f40603d31c990d333c060314031730f1188b34ea",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5e9c970b76d6f3a5b0718256a75ad3cb89e8659b",
+                "reference": "5e9c970b76d6f3a5b0718256a75ad3cb89e8659b",
                 "shasum": ""
             },
             "require": {
@@ -865,7 +865,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-12-05T12:29:45+00:00"
+            "time": "2019-12-04T16:30:12+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
