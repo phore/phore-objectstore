@@ -87,7 +87,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
             } catch (\Exception $e) {
                 if ($i > 2)
                     throw $e;
-                usleep(1000);
+                usleep(mt_rand(10, 1000)); // On error - wait a period and try again
                 continue;
             }
         }
