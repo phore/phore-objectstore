@@ -9,12 +9,11 @@
   ],
   "require": {
     "php": ">=7.1",
-    "phore/core": "dev-master",
+    "phore/core": "*",
     "ext-json": "*",
     "ext-yaml": "*",
-    "phore/http-client": "dev-spooling-test",
-    "ext-openssl": "*",
-    "phpunit/phpunit": "8.5.x-dev"
+    "phore/http-client": "*",
+    "ext-openssl": "*"
   },
   "suggest": {
     "google/cloud-storage": "If using Google Cloud services",
@@ -30,8 +29,8 @@
   },
   "minimum-stability": "dev",
   "require-dev": {
-    "nette/tester": "^2.1@dev",
-    "google/cloud-storage": "dev-master",
-    "phore/filesystem": "dev-master"
+    "phpunit/phpunit": "8.5.x-dev",
+    "google/cloud-storage": "*",
+    "phore/filesystem": "*"
   }
 }
