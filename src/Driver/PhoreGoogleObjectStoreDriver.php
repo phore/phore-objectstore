@@ -8,9 +8,7 @@ use Phore\HttpClient\Ex\PhoreHttpRequestException;
 use Psr\Http\Message\StreamInterface;
 
 
-const BASE_URI = 'https://storage.googleapis.com/storage/v1/';
-const UPLOAD_URI = "https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o";//{?query*}';
-const DOWNLOAD_URI = "https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}";//{?query*}';
+
 
 /**
  * Class PhoreGoogleObjectStoreDriver
@@ -18,6 +16,9 @@ const DOWNLOAD_URI = "https://storage.googleapis.com/storage/v1/b/{bucket}/o/{ob
  */
 class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
 {
+    const BASE_URI = 'https://storage.googleapis.com/storage/v1/';
+    const UPLOAD_URI = "https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o";//{?query*}';
+    const DOWNLOAD_URI = "https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}";//{?query*}';
 
     /**
      * @var string
@@ -118,7 +119,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $i=0;
         do {
             try {
-                phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
+                phore_http_request(self::DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
                     ->withBearerAuth($this->accessToken)->send()->getBodyJson();
                 return true;
             } catch (PhoreHttpRequestException $ex) {
@@ -131,7 +132,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                 }
                 throw $ex;
             }
-        }while($i < $this->retries);
+        }while($i < $this->retries && $this->retry);
     }
 
     /**
@@ -169,7 +170,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         if($metadata === null) {
             do {
                 try {
-                    phore_http_request(UPLOAD_URI . "?uploadType=media&name={object}", ['bucket' => $this->bucketName, 'object' => $objectId])
+                    phore_http_request(self::UPLOAD_URI . "?uploadType=media&name={object}", ['bucket' => $this->bucketName, 'object' => $objectId])
                         ->withBearerAuth($this->accessToken)
                         ->withPostBody($content)->withHeaders(['Content-Type' => $this->_getContentType($objectId)])->send();
                     return true;
@@ -180,7 +181,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     }
                     return false;
                 }
-            }while($i < $this->retries);
+            }while($i < $this->retries && $this->retry);
         }
         $meta['name']=$objectId;
         $meta['metadata'] = $metadata;
@@ -193,7 +194,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
 
         do {
             try {
-                phore_http_request(UPLOAD_URI . "?uploadType=multipart", ['bucket' => $this->bucketName])
+                phore_http_request(self::UPLOAD_URI . "?uploadType=multipart", ['bucket' => $this->bucketName])
                     ->withBearerAuth($this->accessToken)
                     ->withPostBody($body)->withHeaders(['Content-Type' => "multipart/related; boundary=$delimiter"])->send();
                 return true;
@@ -204,7 +205,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                 }
                 return false;
             }
-        }while($i < $this->retries);
+        }while($i < $this->retries && $this->retry);
     }
 
     /**
@@ -229,7 +230,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $i=0;
         do {
             try {
-                return phore_http_request(DOWNLOAD_URI . "?alt=media", ['bucket' => $this->bucketName, 'object' => $objectId])
+                return phore_http_request(self::DOWNLOAD_URI . "?alt=media", ['bucket' => $this->bucketName, 'object' => $objectId])
                     ->withBearerAuth($this->accessToken)->send()->getBody();
             } catch (PhoreHttpRequestException $ex) {
                 if ($this->retry) {
@@ -242,7 +243,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     throw $ex;
                 }
             }
-        }while($i < $this->retries);
+        }while($i < $this->retries && $this->retry);
     }
 
 
@@ -267,7 +268,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $i=0;
         do {
             try {
-                return phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
+                return phore_http_request(self::DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
                     ->withBearerAuth($this->accessToken)->withMethod('DELETE')->send()->getBody();
             } catch (PhoreHttpRequestException $ex) {
                 if ($this->retry) {
@@ -280,7 +281,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     throw $ex;
                 }
             }
-        }while($i < $this->retries);
+        }while($i < $this->retries && $this->retry);
     }
 
     /**
@@ -298,7 +299,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $i=0;
         do {
             try {
-                return phore_http_request(DOWNLOAD_URI."/copyTo/b/{bucket}/o/{newObjectId}",
+                return phore_http_request(self::DOWNLOAD_URI."/copyTo/b/{bucket}/o/{newObjectId}",
                                           ['bucket' => $this->bucketName, 'object' => $objectId, 'newObjectId' => $newObjectId])
                     ->withBearerAuth($this->accessToken)
                     ->withPostBody()
@@ -312,7 +313,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                 throw $ex;
 
             }
-        }while($i < $this->retries);
+        }while($i < $this->retries && $this->retry);
     }
 
     /**
@@ -340,10 +341,22 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $body['sourceObjects'] = [['name' => $objectId], ['name' => $tmpId]];
         $body['destination'] = $meta;
 
-        $objectMeta = phore_http_request(DOWNLOAD_URI . "/compose", ['bucket' => $this->bucketName, 'object' => $objectId])
-            ->withBearerAuth($this->accessToken)->withPostBody($body)->send()->getBodyJson();
+        $i=0;
+        do {
+            try {
+                $objectMeta = phore_http_request(self::DOWNLOAD_URI . "/compose", ['bucket' => $this->bucketName, 'object' => $objectId])
+                                                ->withBearerAuth($this->accessToken)->withPostBody($body)->send()->getBodyJson();
+                $this->remove($tmpId);
+            } catch (PhoreHttpRequestException $ex) {
+                if ($this->retry) {
+                    $i++;
+                    continue;
+                }
 
-        $this->remove($tmpId);
+                    throw $ex;
+
+            }
+        }while($i < $this->retries && $this->retry);
 
         if(phore_pluck('name', $objectMeta) === $objectId) {
             return true;
@@ -360,7 +373,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $i=0;
         do {
             try {
-                return phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
+                return phore_http_request(self::DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
                     ->withBearerAuth($this->accessToken)->send()->getBodyJson();
             } catch (PhoreHttpRequestException $ex) {
                 if ($this->retry) {
@@ -371,7 +384,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     return [];
                 }
             }
-        }while($i < $this->retries);
+        }while($i < $this->retries && $this->retry);
     }
 
     /**

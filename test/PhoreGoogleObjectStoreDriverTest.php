@@ -27,44 +27,10 @@ class PhoreGoogleObjectStoreDriverTest extends TestCase
 
     public static function tearDownAfterClass(): void
     {
-        //self::$driver->remove("testMeta.txt");
-        //self::$driver->remove("testMetaRenamed.txt");
+        self::$driver->remove("testMeta.txt");
+        self::$driver->remove("testMetaRenamed.txt");
     }
-/*
-    public function testAsync()
-    {
-        $queue = new PhoreHttpAsyncQueue();
 
-        //$queue->queue(phore_http_request("http://localhost/test.php?case=wait"));
-
-        phore_out("Start");
-
-        $err = 0;
-        $ok = 0;
-        $token = self::$driver->accessToken;
-        for ($i=0; $i<300; $i++) {
-            $queue->queue(phore_http_request("https://storage.googleapis.com/storage/v1/b/phore-objectstore-unit-testing/o/DO_NOT_TOUCH_test_2019-12-02.txt")
-                ->withBearerAuth($token)->withTimeout(1000,10000))->then(
-                function(PhoreHttpResponse $response) use (&$data, &$ok)  {
-                    phore_out("OK$ok:");
-                    $ok++;
-
-                },
-                function (PhoreHttpRequestException $ex) use (&$err){
-                    phore_out("ERR$err:" . $ex->getMessage());
-                    $err++;
-                });
-        }
-
-        $queue->wait();
-
-        phore_out("stop");
-
-        echo "\nOK: $ok Err: $err\n";
-        echo $data;
-
-    }
-*/
     public function testHas()
     {
 
@@ -160,5 +126,39 @@ class PhoreGoogleObjectStoreDriverTest extends TestCase
         $this->assertEquals( "testMetaRenamed.txt", $result['name']);
     }
 
+    /*
+    public function testAsync()
+    {
+        $queue = new PhoreHttpAsyncQueue();
 
+        //$queue->queue(phore_http_request("http://localhost/test.php?case=wait"));
+
+        phore_out("Start");
+
+        $err = 0;
+        $ok = 0;
+        $token = self::$driver->accessToken;
+        for ($i=0; $i<300; $i++) {
+            $queue->queue(phore_http_request("https://storage.googleapis.com/storage/v1/b/phore-objectstore-unit-testing/o/DO_NOT_TOUCH_test_2019-12-02.txt")
+                ->withBearerAuth($token)->withTimeout(1000,10000))->then(
+                function(PhoreHttpResponse $response) use (&$data, &$ok)  {
+                    phore_out("OK$ok:");
+                    $ok++;
+
+                },
+                function (PhoreHttpRequestException $ex) use (&$err){
+                    phore_out("ERR$err:" . $ex->getMessage());
+                    $err++;
+                });
+        }
+
+        $queue->wait();
+
+        phore_out("stop");
+
+        echo "\nOK: $ok Err: $err\n";
+        echo $data;
+
+    }
+*/
 }
