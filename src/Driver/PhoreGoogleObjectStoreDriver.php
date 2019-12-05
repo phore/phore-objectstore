@@ -38,6 +38,16 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     public $accessToken;
 
     /**
+     * @var integer
+     */
+    public $retries = 3;
+
+    /**
+     * @var bool
+     */
+    public $retry;
+
+    /**
      * PhoreGoogleObjectStoreDriver constructor.
      * @param string $configFilePath
      * @param string $bucketName
@@ -45,13 +55,18 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @throws \Phore\FileSystem\Exception\FileParsingException
      * @throws PhoreHttpRequestException
      */
-    public function __construct(string $configFilePath, string $bucketName)
+    public function __construct(string $configFilePath, string $bucketName, bool $retry = false)
     {
         $this->config = phore_file($configFilePath)->get_json();
         $this->bucketName = $bucketName;
         $this->base_url .= "/b/".$bucketName;
+        $this->retry = $retry;
 
         $this->accessToken = $this->_getJwt()['access_token'];
+    }
+
+    public function setRetries(int $retries){
+        $this->retries = $retries;
     }
 
     /**
@@ -98,17 +113,23 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function has(string $objectId): bool
     {
-        try {
-            phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
-                ->withBearerAuth($this->accessToken)->send()->getBodyJson();
-        } catch (PhoreHttpRequestException $ex) {
-            if($ex->getCode() === 404) {
-                return false;
+        $i=0;
+        do {
+            try {
+                phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
+                    ->withBearerAuth($this->accessToken)->send()->getBodyJson();
+                return true;
+            } catch (PhoreHttpRequestException $ex) {
+                if ($this->retry) {
+                    $i++;
+                    continue;
+                }
+                if($ex->getCode() === 404) {
+                    return false;
+                }
+                throw $ex;
             }
-            throw $ex;
-        }
-
-        return true;
+        }while($i < $this->retries);
     }
 
     /**
@@ -141,15 +162,23 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function put(string $objectId, $content, array $metadata = null)
     {
+        $i=0;
+
         if($metadata === null) {
-            try {
-                phore_http_request(UPLOAD_URI . "?uploadType=media&name={object}", ['bucket' => $this->bucketName, 'object' => $objectId])
-                    ->withBearerAuth($this->accessToken)
-                    ->withPostBody($content)->withHeaders(['Content-Type' => $this->_getContentType($objectId)])->send();
-            } catch (PhoreHttpRequestException $ex) {
-                return false;
-            }
-            return true;
+            do {
+                try {
+                    phore_http_request(UPLOAD_URI . "?uploadType=media&name={object}", ['bucket' => $this->bucketName, 'object' => $objectId])
+                        ->withBearerAuth($this->accessToken)
+                        ->withPostBody($content)->withHeaders(['Content-Type' => $this->_getContentType($objectId)])->send();
+                    return true;
+                } catch (PhoreHttpRequestException $ex) {
+                    if ($this->retry) {
+                        $i++;
+                        continue;
+                    }
+                    return false;
+                }
+            }while($i < $this->retries);
         }
         $meta['name']=$objectId;
         $meta['metadata'] = $metadata;
@@ -159,14 +188,21 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $meta = phore_json_encode($meta);
         $delimiter = "delimiter";
         $body = "--$delimiter\nContent-Type: application/json; charset=UTF-8\n\n$meta\n\n--$delimiter\nContent-Type: {$this->_getContentType($objectId)}\n\n$content\n--$delimiter--";
-        try {
-            phore_http_request(UPLOAD_URI . "?uploadType=multipart", ['bucket' => $this->bucketName])
-                ->withBearerAuth($this->accessToken)
-                ->withPostBody($body)->withHeaders(['Content-Type' => "multipart/related; boundary=$delimiter"])->send();
-        } catch (PhoreHttpRequestException $ex) {
-            return false;
-        }
-        return true;
+
+        do {
+            try {
+                phore_http_request(UPLOAD_URI . "?uploadType=multipart", ['bucket' => $this->bucketName])
+                    ->withBearerAuth($this->accessToken)
+                    ->withPostBody($body)->withHeaders(['Content-Type' => "multipart/related; boundary=$delimiter"])->send();
+                return true;
+            } catch (PhoreHttpRequestException $ex) {
+                if ($this->retry) {
+                    $i++;
+                    continue;
+                }
+                return false;
+            }
+        }while($i < $this->retries);
 
     }
 
@@ -188,16 +224,23 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function get(string $objectId, array &$meta = null): string
     {
-        try {
-            return phore_http_request(DOWNLOAD_URI . "?alt=media", ['bucket' => $this->bucketName, 'object' => $objectId])
-                ->withBearerAuth($this->accessToken)->send()->getBody();
-        } catch (PhoreHttpRequestException $ex) {
-            if($ex->getCode() === 404) {
-                throw new NotFoundException($ex->getMessage(), $ex->getCode(), $ex);
-            } else {
-                throw $ex;
+        $i=0;
+        do {
+            try {
+                return phore_http_request(DOWNLOAD_URI . "?alt=media", ['bucket' => $this->bucketName, 'object' => $objectId])
+                    ->withBearerAuth($this->accessToken)->send()->getBody();
+            } catch (PhoreHttpRequestException $ex) {
+                if ($this->retry) {
+                    $i++;
+                    continue;
+                }
+                if ($ex->getCode() === 404) {
+                    throw new NotFoundException($ex->getMessage(), $ex->getCode(), $ex);
+                } else {
+                    throw $ex;
+                }
             }
-        }
+        }while($i < $this->retries);
     }
 
 

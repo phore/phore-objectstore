@@ -14,7 +14,7 @@ use Phore\HttpClient\PhoreHttpResponse;
 use Phore\ObjectStore\Driver\PhoreGoogleObjectStoreDriver;
 
 require __DIR__ . "/../vendor/autoload.php";
-
+ /*
 $googleSecret = "/run/secrets/google_test";
 
 
@@ -62,7 +62,7 @@ for ($iv=0; $iv<10; $iv++) {
     phore_out("\nOK: $ok Err: $err\n");
 }
 
-
+*/
 
 
 
