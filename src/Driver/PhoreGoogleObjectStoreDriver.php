@@ -51,6 +51,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * PhoreGoogleObjectStoreDriver constructor.
      * @param string $configFilePath
      * @param string $bucketName
+     * @param bool $retry
      * @throws \Phore\FileSystem\Exception\FileNotFoundException
      * @throws \Phore\FileSystem\Exception\FileParsingException
      * @throws PhoreHttpRequestException
@@ -81,6 +82,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     /**
      * @return array
      * @throws PhoreHttpRequestException
+     * @throws \Exception
      */
     private function _getJwt()
     {
@@ -203,7 +205,6 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                 return false;
             }
         }while($i < $this->retries);
-
     }
 
     /**
@@ -221,6 +222,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $meta
      * @return string
      * @throws NotFoundException
+     * @throws PhoreHttpRequestException
      */
     public function get(string $objectId, array &$meta = null): string
     {
@@ -258,19 +260,27 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $objectId
      * @return string
      * @throws NotFoundException
+     * @throws PhoreHttpRequestException
      */
     public function remove(string $objectId)
     {
-        try {
-            return phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
-                ->withBearerAuth($this->accessToken)->withMethod('DELETE')->send()->getBody();
-        } catch (PhoreHttpRequestException $ex) {
-            if($ex->getCode() === 404) {
-                throw new NotFoundException($ex->getMessage(), $ex->getCode(), $ex);
-            } else {
-                throw $ex;
+        $i=0;
+        do {
+            try {
+                return phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
+                    ->withBearerAuth($this->accessToken)->withMethod('DELETE')->send()->getBody();
+            } catch (PhoreHttpRequestException $ex) {
+                if ($this->retry) {
+                    $i++;
+                    continue;
+                }
+                if ($ex->getCode() === 404) {
+                    throw new NotFoundException($ex->getMessage(), $ex->getCode(), $ex);
+                } else {
+                    throw $ex;
+                }
             }
-        }
+        }while($i < $this->retries);
     }
 
     /**
@@ -284,10 +294,25 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         if($this->has($newObjectId)){
             throw new \InvalidArgumentException("Cannot rename '$objectId'. ObjectId '$newObjectId' already in use.");
         }
-        return phore_http_request(DOWNLOAD_URI."/copyTo/b/{bucket}/o/{newObjectId}",
-            ['bucket' => $this->bucketName, 'object' => $objectId, 'newObjectId' => $newObjectId]
-        )->withBearerAuth($this->accessToken)->withPostBody()->send()->getBodyJson();
 
+        $i=0;
+        do {
+            try {
+                return phore_http_request(DOWNLOAD_URI."/copyTo/b/{bucket}/o/{newObjectId}",
+                                          ['bucket' => $this->bucketName, 'object' => $objectId, 'newObjectId' => $newObjectId])
+                    ->withBearerAuth($this->accessToken)
+                    ->withPostBody()
+                    ->send()
+                    ->getBodyJson();
+            } catch (PhoreHttpRequestException $ex) {
+                if ($this->retry) {
+                    $i++;
+                    continue;
+                }
+                throw $ex;
+
+            }
+        }while($i < $this->retries);
     }
 
     /**
@@ -295,6 +320,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $data
      * @return array|bool|mixed
      * @throws PhoreHttpRequestException
+     * @throws \Exception
      */
     public function append(string $objectId, string $data)
     {
@@ -331,15 +357,21 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function getMeta(string $objectId): array
     {
-
-        try {
-            return phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
-                ->withBearerAuth($this->accessToken)->send()->getBodyJson();
-        } catch (PhoreHttpRequestException $ex) {
-            if($ex->getCode() === 404) {
-                return [];
+        $i=0;
+        do {
+            try {
+                return phore_http_request(DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
+                    ->withBearerAuth($this->accessToken)->send()->getBodyJson();
+            } catch (PhoreHttpRequestException $ex) {
+                if ($this->retry) {
+                    $i++;
+                    continue;
+                }
+                if($ex->getCode() === 404) {
+                    return [];
+                }
             }
-        }
+        }while($i < $this->retries);
     }
 
     /**
