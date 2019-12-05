@@ -1,11 +1,11 @@
 version: 1
-from: "infracamp/kickstart-flavor-gaia:testing"
+from: "infracamp/kickstart-flavor-gaia:7.4-experimental"
 
 apache_fallback_resource: "/index.php"
 
 command:
   build:
-    - "composer update"
+#    - "composer update"
 
   test:
     - "phpunit test/"

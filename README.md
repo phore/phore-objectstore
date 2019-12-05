@@ -19,3 +19,12 @@ if ($store->has("object/some.json"))
 echo $store->object("object/some.json")->get();
 ```
 
+
+
+## Develop
+
+The google native drivers require a secret as service account. Create the secret using 
+
+```
+./kickstart.sh secrets edit google_test
+```
