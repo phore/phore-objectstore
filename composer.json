@@ -13,8 +13,7 @@
     "ext-json": "*",
     "ext-yaml": "*",
     "phore/http-client": "*",
-    "ext-openssl": "*",
-    "phpunit/phpunit": "8.5.x-dev"
+    "ext-openssl": "*"
   },
   "suggest": {
     "google/cloud-storage": "If using Google Cloud services",
@@ -30,7 +29,7 @@
   },
   "minimum-stability": "dev",
   "require-dev": {
-    "nette/tester": "^2.1@dev",
+    "phpunit/phpunit": "8.5.x-dev",
     "google/cloud-storage": "*",
     "phore/filesystem": "*"
   }
