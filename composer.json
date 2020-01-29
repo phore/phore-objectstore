@@ -13,7 +13,8 @@
     "ext-json": "*",
     "ext-yaml": "*",
     "phore/http-client": "*",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "microsoft/azure-storage-blob": "*"
   },
   "suggest": {
     "google/cloud-storage": "If using Google Cloud services",
