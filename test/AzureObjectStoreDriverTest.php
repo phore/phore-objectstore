@@ -85,4 +85,8 @@ class AzureObjectStoreDriverTest extends TestCase
         $result = $this->driver->get("test/test.txt");
         $this->assertEquals("wurst\nwurst", $result);
     }
+
+    /*public function testTest(){
+        print_r($this->driver->list("test/test.txt"));
+    }*/
 }

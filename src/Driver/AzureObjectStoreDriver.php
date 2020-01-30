@@ -10,7 +10,9 @@ namespace Phore\ObjectStore\Driver;
 
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
+use MicrosoftAzure\Storage\Common\Models\ServiceOptions;
 use Psr\Http\Message\StreamInterface;
 
 class AzureObjectStoreDriver implements ObjectStoreDriver
@@ -39,6 +41,24 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
             }
             throw $e;
         }
+        /*
+        try {
+            $blob_list = $this->blobClient->listBlobs($this->containerName);
+            $blobs = $blob_list->getBlobs();
+            $exists = false;
+            foreach($blobs as $blob)
+            {
+                if($blob->getName() === $objectId){
+                    $exists = true;
+                }
+            }
+        } catch(ServiceException $e){
+            throw $e;
+        }
+        if($exists === true){
+            return true;
+        }
+        return false;*/
     }
 
     public function put(string $objectId, $content, array $metadata = null)
@@ -102,5 +122,21 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
     public function walk(callable $walkFunction): bool
     {
         // TODO: Implement walk() method.
+    }
+
+    public function list() : array
+    {
+        $blobList = [];
+        try {
+            $blob_list = $this->blobClient->listBlobs($this->containerName);
+            $blobs = $blob_list->getBlobs();
+            foreach($blobs as $blob)
+            {
+                $blobList[] = ["blobName" => $blob->getName(), "blobUrl" => $blob->getUrl()];
+            }
+        } catch(ServiceException $e){
+            throw $e;
+        }
+        return $blobList;
     }
 }
