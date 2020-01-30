@@ -10,6 +10,9 @@ namespace Phore\ObjectStore\Driver;
 
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Blob\Models\AppendBlockOptions;
+use MicrosoftAzure\Storage\Blob\Models\BlobServiceOptions;
+use MicrosoftAzure\Storage\Blob\Models\CreateBlobOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use MicrosoftAzure\Storage\Common\Models\ServiceOptions;
@@ -63,12 +66,24 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
 
     public function put(string $objectId, $content, array $metadata = null)
     {
-        $this->blobClient->createAppendBlob($this->containerName, $objectId);
-        $this->blobClient->appendBlock($this->containerName, $objectId, $content);
+        $blobOptions = new CreateBlobOptions();
+        $appBlobOpt = new AppendBlockOptions();
+        $leased = false;
+
+        if($this->has($objectId)) {
+            $leased = true;
+            $leaseID = $this->blobClient->acquireLease($this->containerName, $objectId, null, 60)->getLeaseId();
+            $blobOptions->setLeaseId($leaseID);
+            $appBlobOpt->setLeaseId($leaseID);
+        }
+        $this->blobClient->createAppendBlob($this->containerName, $objectId, $blobOptions);
+        $this->blobClient->appendBlock($this->containerName, $objectId, $content, $appBlobOpt);
         if($metadata === null){
             $metadata = [];
         }
-        $this->blobClient->setBlobMetadata($this->containerName, $objectId,$metadata);
+        $this->blobClient->setBlobMetadata($this->containerName, $objectId,$metadata, $blobOptions);
+        if($leased === true)
+            $this->blobClient->releaseLease($this->containerName, $objectId, $leaseID, $blobOptions);
     }
 
     public function putStream(string $objectId, $ressource, array $metadata = null)
