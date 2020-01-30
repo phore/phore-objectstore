@@ -133,12 +133,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "c291e45d40e638815990004e5f7ee367c2b752e9"
+                "reference": "c54ea426638a0d70a0b90fd05e8631575ec3695f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/c291e45d40e638815990004e5f7ee367c2b752e9",
-                "reference": "c291e45d40e638815990004e5f7ee367c2b752e9",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/c54ea426638a0d70a0b90fd05e8631575ec3695f",
+                "reference": "c54ea426638a0d70a0b90fd05e8631575ec3695f",
                 "shasum": ""
             },
             "require": {
@@ -196,7 +196,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2019-12-21T15:35:40+00:00"
+            "time": "2020-01-29T13:47:55+00:00"
         },
         {
             "name": "microsoft/azure-storage-blob",
@@ -848,12 +848,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "f2d431523774cb675409669f0eec1e6cf127cc5c"
+                "reference": "8459330a3ee60b640ddce8462eb50c71f617d545"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/f2d431523774cb675409669f0eec1e6cf127cc5c",
-                "reference": "f2d431523774cb675409669f0eec1e6cf127cc5c",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/8459330a3ee60b640ddce8462eb50c71f617d545",
+                "reference": "8459330a3ee60b640ddce8462eb50c71f617d545",
                 "shasum": ""
             },
             "require": {
@@ -921,7 +921,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2019-12-22T10:22:41+00:00"
+            "time": "2020-01-30T07:22:59+00:00"
         },
         {
             "name": "myclabs/deep-copy",

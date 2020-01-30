@@ -45,6 +45,9 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
     {
         $this->blobClient->createAppendBlob($this->containerName, $objectId);
         $this->blobClient->appendBlock($this->containerName, $objectId, $content);
+        if($metadata === null){
+            $metadata = [];
+        }
         $this->blobClient->setBlobMetadata($this->containerName, $objectId,$metadata);
     }
 
@@ -52,6 +55,9 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
     {
         $this->blobClient->createAppendBlob($this->containerName, $objectId);
         $this->blobClient->appendBlock($this->containerName, $objectId, $ressource);
+        if($metadata === null){
+            $metadata = [];
+        }
         $this->blobClient->setBlobMetadata($this->containerName, $objectId,$metadata);
     }
 

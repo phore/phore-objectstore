@@ -36,6 +36,11 @@ class AzureObjectStoreDriverTest extends TestCase
         $this->assertTrue($this->driver->has("test/test.txt"));
     }
 
+    public function testPutEmptyMeta(){
+        $this->driver->put("test/test.txt", "wurst");
+        $this->assertTrue($this->driver->has("test/test.txt"));
+    }
+
     public function testGetExisting(){
         $result = $this->driver->get("test/test.txt", $meta);
         $this->assertEquals("wurst", $result);
@@ -52,6 +57,7 @@ class AzureObjectStoreDriverTest extends TestCase
     }
 
     public function testGetMetaData(){
+        $this->driver->put("test/test.txt", "wurst",["test" => "test"]);
         $meta = $this->driver->getMeta("test/test.txt");
         $this->assertEquals(["test" => "test"], $meta);
     }
