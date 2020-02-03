@@ -10,6 +10,8 @@ namespace Phore\ObjectStore\Driver;
 
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use MicrosoftAzure\Storage\Blob\Models\AppendBlockOptions;
+use MicrosoftAzure\Storage\Blob\Models\CreateBlobOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use MicrosoftAzure\Storage\Common\Models\ServiceOptions;
@@ -63,7 +65,8 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
 
     public function put(string $objectId, $content, array $metadata = null)
     {
-        $this->blobClient->createAppendBlob($this->containerName, $objectId);
+        new CreateBlobOptions(new ServiceOptions());
+        $this->blobClient->createAppendBlob($this->containerName, $objectId)->;
         $this->blobClient->appendBlock($this->containerName, $objectId, $content);
         if($metadata === null){
             $metadata = [];

@@ -133,12 +133,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "c54ea426638a0d70a0b90fd05e8631575ec3695f"
+                "reference": "ce6ae067e74df6be68b0b672d790b62bd48910fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/c54ea426638a0d70a0b90fd05e8631575ec3695f",
-                "reference": "c54ea426638a0d70a0b90fd05e8631575ec3695f",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/ce6ae067e74df6be68b0b672d790b62bd48910fb",
+                "reference": "ce6ae067e74df6be68b0b672d790b62bd48910fb",
                 "shasum": ""
             },
             "require": {
@@ -196,7 +196,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2020-01-29T13:47:55+00:00"
+            "time": "2020-01-31T17:23:47+00:00"
         },
         {
             "name": "microsoft/azure-storage-blob",
@@ -1182,12 +1182,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "93919e334b0cb304fb04429b4b3a3b1e1787c873"
+                "reference": "da71602ae92163cfa94f5e5dbdd969629e060a05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/93919e334b0cb304fb04429b4b3a3b1e1787c873",
-                "reference": "93919e334b0cb304fb04429b4b3a3b1e1787c873",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/da71602ae92163cfa94f5e5dbdd969629e060a05",
+                "reference": "da71602ae92163cfa94f5e5dbdd969629e060a05",
                 "shasum": ""
             },
             "require": {
@@ -1227,7 +1227,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2020-01-27T20:01:09+00:00"
+            "time": "2020-02-02T19:24:25+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -1235,12 +1235,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "28517b98024f4d578e7a0774fa4a73ca2a73c724"
+                "reference": "0708a5714a03b5b27a65786543503d9d3ee50e07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/28517b98024f4d578e7a0774fa4a73ca2a73c724",
-                "reference": "28517b98024f4d578e7a0774fa4a73ca2a73c724",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/0708a5714a03b5b27a65786543503d9d3ee50e07",
+                "reference": "0708a5714a03b5b27a65786543503d9d3ee50e07",
                 "shasum": ""
             },
             "require": {
@@ -1273,7 +1273,7 @@
                 }
             ],
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
-            "time": "2019-12-27T21:51:48+00:00"
+            "time": "2020-02-02T19:26:52+00:00"
         },
         {
             "name": "phpspec/prophecy",
