@@ -12,6 +12,7 @@ use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
+use Phore\Core\Exception\NotFoundException;
 use Phore\ObjectStore\Driver\AzureObjectStoreDriver;
 use PHPUnit\Framework\TestCase;
 
@@ -47,7 +48,7 @@ class AzureObjectStoreDriverTest extends TestCase
     }
 
     public function testGetNonExisting(){
-        $this->expectException(ServiceException::class);
+        $this->expectException(NotFoundException::class);
         $this->driver->get("test/fail.txt", $meta);
     }
 

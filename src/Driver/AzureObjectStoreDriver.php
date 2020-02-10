@@ -17,6 +17,7 @@ use MicrosoftAzure\Storage\Blob\Models\CreateBlockBlobOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use MicrosoftAzure\Storage\Common\Models\ServiceOptions;
+use Phore\Core\Exception\NotFoundException;
 use Psr\Http\Message\StreamInterface;
 
 class AzureObjectStoreDriver implements ObjectStoreDriver
@@ -69,8 +70,15 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
 
     public function get(string $objectId, array &$meta = null): string
     {
-        $blob = $this->blobClient->getBlob($this->containerName, $objectId);
-        $meta = $blob->getMetadata();
+        try {
+            $blob = $this->blobClient->getBlob($this->containerName, $objectId);
+            $meta = $blob->getMetadata();
+        } catch (\Exception $e) {
+            if($e->getCode() === 404) {
+                throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
+            }
+            throw $e;
+        }
         return stream_get_contents($blob->getContentStream());
     }
 
