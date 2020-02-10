@@ -48,7 +48,7 @@ class AzureObjectStoreDriverTest extends TestCase
 
     public function testGetNonExisting(){
         $this->expectException(ServiceException::class);
-        $result = $this->driver->get("test/fail.txt", $meta);
+        $this->driver->get("test/fail.txt", $meta);
     }
 
     public function testHas(){
@@ -86,7 +86,4 @@ class AzureObjectStoreDriverTest extends TestCase
         $this->assertEquals("wurst\nwurst", $result);
     }
 
-    /*public function testTest(){
-        print_r($this->driver->list("test/test.txt"));
-    }*/
 }

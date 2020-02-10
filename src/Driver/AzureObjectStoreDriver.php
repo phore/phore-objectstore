@@ -11,8 +11,9 @@ namespace Phore\ObjectStore\Driver;
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\AppendBlockOptions;
-use MicrosoftAzure\Storage\Blob\Models\BlobServiceOptions;
+use MicrosoftAzure\Storage\Blob\Models\CreateBlobBlockOptions;
 use MicrosoftAzure\Storage\Blob\Models\CreateBlobOptions;
+use MicrosoftAzure\Storage\Blob\Models\CreateBlockBlobOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use MicrosoftAzure\Storage\Common\Models\ServiceOptions;
@@ -36,7 +37,7 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
     public function has(string $objectId): bool
     {
         try {
-            $this->blobClient->getBlob($this->containerName, $objectId);
+            $this->blobClient->getBlobMetadata($this->containerName, $objectId);
             return true;
         } catch (ServiceException $e) {
             if($e->getCode() === 404 && strpos($e->getMessage(), "The specified blob does not exist.")) {
@@ -44,56 +45,26 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
             }
             throw $e;
         }
-        /*
-        try {
-            $blob_list = $this->blobClient->listBlobs($this->containerName);
-            $blobs = $blob_list->getBlobs();
-            $exists = false;
-            foreach($blobs as $blob)
-            {
-                if($blob->getName() === $objectId){
-                    $exists = true;
-                }
-            }
-        } catch(ServiceException $e){
-            throw $e;
-        }
-        if($exists === true){
-            return true;
-        }
-        return false;*/
     }
 
     public function put(string $objectId, $content, array $metadata = null)
     {
-        $blobOptions = new CreateBlobOptions();
-        $appBlobOpt = new AppendBlockOptions();
-        $leased = false;
-
-        if($this->has($objectId)) {
-            $leased = true;
-            $leaseID = $this->blobClient->acquireLease($this->containerName, $objectId, null, 60)->getLeaseId();
-            $blobOptions->setLeaseId($leaseID);
-            $appBlobOpt->setLeaseId($leaseID);
+        $options = null;
+        if( $metadata !== null) {
+            $options = new CreateBlockBlobOptions();
+            $options->setMetadata($metadata);
         }
-        $this->blobClient->createAppendBlob($this->containerName, $objectId, $blobOptions);
-        $this->blobClient->appendBlock($this->containerName, $objectId, $content, $appBlobOpt);
-        if($metadata === null){
-            $metadata = [];
-        }
-        $this->blobClient->setBlobMetadata($this->containerName, $objectId,$metadata, $blobOptions);
-        if($leased === true)
-            $this->blobClient->releaseLease($this->containerName, $objectId, $leaseID, $blobOptions);
+        $this->blobClient->createBlockBlob($this->containerName, $objectId , $content, $options);
     }
 
     public function putStream(string $objectId, $ressource, array $metadata = null)
     {
-        $this->blobClient->createAppendBlob($this->containerName, $objectId);
-        $this->blobClient->appendBlock($this->containerName, $objectId, $ressource);
-        if($metadata === null){
-            $metadata = [];
+        $options = null;
+        if( $metadata !== null) {
+            $options = new CreateBlockBlobOptions();
+            $options->setMetadata($metadata);
         }
-        $this->blobClient->setBlobMetadata($this->containerName, $objectId,$metadata);
+        $this->blobClient->createBlockBlob($this->containerName, $objectId , $ressource, $options);
     }
 
     public function get(string $objectId, array &$meta = null): string
@@ -116,12 +87,20 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
     public function rename(string $objectId, string $newObjectId)
     {
         $this->blobClient->copyBlob($this->containerName, $newObjectId, $this->containerName, $objectId);
-        $this->remove($objectId);
+        $this->blobClient->deleteBlob($this->containerName, $objectId);
     }
 
     public function append(string $objectId, string $data)
     {
-        $this->blobClient->appendBlock($this->containerName, $objectId, $data);
+        $leaseID = $this->blobClient->acquireLease($this->containerName, $objectId, null, 60)->getLeaseId();
+        $blobOptions = new CreateBlockBlobOptions();
+        $blobOptions->setLeaseId($leaseID);
+        $content = $this->get($objectId, $meta);
+        $content .= $data;
+        $blobOptions->setMetadata($meta);
+        $this->blobClient->createBlockBlob($this->containerName, $objectId , $content, $blobOptions);
+        $this->blobClient->releaseLease($this->containerName, $objectId, $leaseID);
+
     }
 
     public function getMeta(string $objectId): array
