@@ -79,12 +79,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "ac2529fc650684c5cd687e2b462d046cdbed556e"
+                "reference": "4771454c37ada3ad55a8cbc2501a1a69b8fa588b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/ac2529fc650684c5cd687e2b462d046cdbed556e",
-                "reference": "ac2529fc650684c5cd687e2b462d046cdbed556e",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/4771454c37ada3ad55a8cbc2501a1a69b8fa588b",
+                "reference": "4771454c37ada3ad55a8cbc2501a1a69b8fa588b",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2019-12-17T17:19:17+00:00"
+            "time": "2020-02-12T12:54:07+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -130,12 +130,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "c54ea426638a0d70a0b90fd05e8631575ec3695f"
+                "reference": "e193ff330a0f28b5e5f65ed3d804f5e2a89376e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/c54ea426638a0d70a0b90fd05e8631575ec3695f",
-                "reference": "c54ea426638a0d70a0b90fd05e8631575ec3695f",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e193ff330a0f28b5e5f65ed3d804f5e2a89376e3",
+                "reference": "e193ff330a0f28b5e5f65ed3d804f5e2a89376e3",
                 "shasum": ""
             },
             "require": {
@@ -193,7 +193,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2020-01-29T13:47:55+00:00"
+            "time": "2020-02-04T14:54:51+00:00"
         },
         {
             "name": "microsoft/azure-storage-blob",
@@ -587,16 +587,16 @@
         },
         {
             "name": "google/auth",
-            "version": "v1.6.1",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "45635ac69d0b95f38885531d4ebcdfcb2ebb6f36"
+                "reference": "e687f40eafe60f4622fa1bdb9244f9bfb835e0a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/45635ac69d0b95f38885531d4ebcdfcb2ebb6f36",
-                "reference": "45635ac69d0b95f38885531d4ebcdfcb2ebb6f36",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/e687f40eafe60f4622fa1bdb9244f9bfb835e0a9",
+                "reference": "e687f40eafe60f4622fa1bdb9244f9bfb835e0a9",
                 "shasum": ""
             },
             "require": {
@@ -610,6 +610,7 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^1.11",
                 "guzzlehttp/promises": "0.1.1|^1.3",
+                "kelvinmo/simplejwt": "^0.2.5",
                 "phpseclib/phpseclib": "^2",
                 "phpunit/phpunit": "^4.8.36|^5.7",
                 "sebastian/comparator": ">=1.2.3"
@@ -634,20 +635,20 @@
                 "google",
                 "oauth2"
             ],
-            "time": "2019-10-29T20:13:04+00:00"
+            "time": "2020-02-11T17:45:21+00:00"
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.34.0",
+            "version": "v1.35.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "52db21acb2da25d2d79e493842de58da7836c97f"
+                "reference": "e24a49fb1df51d6cff38c97450feffae82661c2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/52db21acb2da25d2d79e493842de58da7836c97f",
-                "reference": "52db21acb2da25d2d79e493842de58da7836c97f",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/e24a49fb1df51d6cff38c97450feffae82661c2d",
+                "reference": "e24a49fb1df51d6cff38c97450feffae82661c2d",
                 "shasum": ""
             },
             "require": {
@@ -695,7 +696,7 @@
                 "Apache-2.0"
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
-            "time": "2019-10-28T19:05:44+00:00"
+            "time": "2020-02-11T23:07:13+00:00"
         },
         {
             "name": "google/cloud-storage",
@@ -703,16 +704,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-storage.git",
-                "reference": "626e910530f0b9463a15563f697a66f1cfbd6369"
+                "reference": "201b69aa6f24b60718dc0bd0c1bdc6963ade0e99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/626e910530f0b9463a15563f697a66f1cfbd6369",
-                "reference": "626e910530f0b9463a15563f697a66f1cfbd6369",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-storage/zipball/201b69aa6f24b60718dc0bd0c1bdc6963ade0e99",
+                "reference": "201b69aa6f24b60718dc0bd0c1bdc6963ade0e99",
                 "shasum": ""
             },
             "require": {
-                "google/cloud-core": "^1.31",
+                "google/cloud-core": "^1.35",
                 "google/crc32": "^0.1.0"
             },
             "require-dev": {
@@ -746,7 +747,7 @@
                 "Apache-2.0"
             ],
             "description": "Cloud Storage Client for PHP",
-            "time": "2020-01-07T21:25:58+00:00"
+            "time": "2020-02-11T23:07:13+00:00"
         },
         {
             "name": "google/crc32",
@@ -1130,12 +1131,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "93919e334b0cb304fb04429b4b3a3b1e1787c873"
+                "reference": "50e77ace682d81779b87e554bdbfc7fb0e6f8d53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/93919e334b0cb304fb04429b4b3a3b1e1787c873",
-                "reference": "93919e334b0cb304fb04429b4b3a3b1e1787c873",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/50e77ace682d81779b87e554bdbfc7fb0e6f8d53",
+                "reference": "50e77ace682d81779b87e554bdbfc7fb0e6f8d53",
                 "shasum": ""
             },
             "require": {
@@ -1175,7 +1176,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2020-01-27T20:01:09+00:00"
+            "time": "2020-02-12T07:18:08+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -1183,12 +1184,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "28517b98024f4d578e7a0774fa4a73ca2a73c724"
+                "reference": "35ac7d8479b312530648b28914620120446fa0ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/28517b98024f4d578e7a0774fa4a73ca2a73c724",
-                "reference": "28517b98024f4d578e7a0774fa4a73ca2a73c724",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/35ac7d8479b312530648b28914620120446fa0ae",
+                "reference": "35ac7d8479b312530648b28914620120446fa0ae",
                 "shasum": ""
             },
             "require": {
@@ -1221,7 +1222,7 @@
                 }
             ],
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
-            "time": "2019-12-27T21:51:48+00:00"
+            "time": "2020-02-10T19:49:09+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -1544,12 +1545,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2f0ab996ca57beb9598bb6429bdaf94daddb1f9e"
+                "reference": "6d6f260a2e82f57026b28db566da6e62fff3bf2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2f0ab996ca57beb9598bb6429bdaf94daddb1f9e",
-                "reference": "2f0ab996ca57beb9598bb6429bdaf94daddb1f9e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6d6f260a2e82f57026b28db566da6e62fff3bf2a",
+                "reference": "6d6f260a2e82f57026b28db566da6e62fff3bf2a",
                 "shasum": ""
             },
             "require": {
@@ -1619,7 +1620,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2020-01-23T15:44:04+00:00"
+            "time": "2020-02-11T16:13:52+00:00"
         },
         {
             "name": "psr/cache",

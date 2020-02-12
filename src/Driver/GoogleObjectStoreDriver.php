@@ -24,13 +24,23 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      */
     private $bucket;
 
-    public function __construct(string $keyFilePath, string $bucketName)
+
+    /**
+     * GoogleObjectStoreDriver constructor.
+     * @param string|array $keyFile
+     * @param string $bucketName
+     */
+    public function __construct($keyFile, string $bucketName)
     {
         if ( ! class_exists(StorageClient::class))
             throw new \InvalidArgumentException("Package google/cloud-storage is missing. Install it by running 'composer install google/cloud-storage'");
-        $store = new StorageClient([
-            "keyFilePath" => $keyFilePath
-        ]);
+        $options = [];
+        if(is_array($keyFile)) {
+            $options = ['keyFile' => $keyFile];
+        } else if (is_string($keyFile)) {
+            $options = ['keyFilePath' => $keyFile];
+        }
+        $store = new StorageClient($options);
 
         $this->bucket = $store->bucket($bucketName);
     }
