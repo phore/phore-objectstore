@@ -79,12 +79,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "4771454c37ada3ad55a8cbc2501a1a69b8fa588b"
+                "reference": "63793536355a64085fe7a602c9e2ef8bf32eb811"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/4771454c37ada3ad55a8cbc2501a1a69b8fa588b",
-                "reference": "4771454c37ada3ad55a8cbc2501a1a69b8fa588b",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/63793536355a64085fe7a602c9e2ef8bf32eb811",
+                "reference": "63793536355a64085fe7a602c9e2ef8bf32eb811",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2020-02-12T12:54:07+00:00"
+            "time": "2020-02-12T18:05:15+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -130,12 +130,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "e193ff330a0f28b5e5f65ed3d804f5e2a89376e3"
+                "reference": "c73b502efd02beb2602500aa36793fb405e383ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e193ff330a0f28b5e5f65ed3d804f5e2a89376e3",
-                "reference": "e193ff330a0f28b5e5f65ed3d804f5e2a89376e3",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/c73b502efd02beb2602500aa36793fb405e383ac",
+                "reference": "c73b502efd02beb2602500aa36793fb405e383ac",
                 "shasum": ""
             },
             "require": {
@@ -151,7 +151,7 @@
                 "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
             },
             "suggest": {
-                "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
+                "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
             "type": "library",
             "extra": {
@@ -193,7 +193,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2020-02-04T14:54:51+00:00"
+            "time": "2020-02-12T23:13:46+00:00"
         },
         {
             "name": "microsoft/azure-storage-blob",
@@ -587,16 +587,16 @@
         },
         {
             "name": "google/auth",
-            "version": "v1.7.0",
+            "version": "v1.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "e687f40eafe60f4622fa1bdb9244f9bfb835e0a9"
+                "reference": "39e243a7d8320b1889ab8bb4cd6f98f7af83c582"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/e687f40eafe60f4622fa1bdb9244f9bfb835e0a9",
-                "reference": "e687f40eafe60f4622fa1bdb9244f9bfb835e0a9",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/39e243a7d8320b1889ab8bb4cd6f98f7af83c582",
+                "reference": "39e243a7d8320b1889ab8bb4cd6f98f7af83c582",
                 "shasum": ""
             },
             "require": {
@@ -635,7 +635,7 @@
                 "google",
                 "oauth2"
             ],
-            "time": "2020-02-11T17:45:21+00:00"
+            "time": "2020-02-12T20:54:50+00:00"
         },
         {
             "name": "google/cloud-core",
@@ -1131,12 +1131,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "50e77ace682d81779b87e554bdbfc7fb0e6f8d53"
+                "reference": "edea3e869367921987704325b997a80cdaea6d66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/50e77ace682d81779b87e554bdbfc7fb0e6f8d53",
-                "reference": "50e77ace682d81779b87e554bdbfc7fb0e6f8d53",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/edea3e869367921987704325b997a80cdaea6d66",
+                "reference": "edea3e869367921987704325b997a80cdaea6d66",
                 "shasum": ""
             },
             "require": {
@@ -1176,7 +1176,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2020-02-12T07:18:08+00:00"
+            "time": "2020-02-12T20:05:04+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",

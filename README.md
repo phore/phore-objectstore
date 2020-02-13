@@ -25,7 +25,7 @@ echo $store->object("object/some.json")->get();
 The object store can be created with
 
 ```php
-$objectStore = ObjectStore::Create('gcs://some-bucket?keyfile=/run/secrets/xyz');
+$objectStore = ObjectStore::Connect('gcs://some-bucket?keyfile=/run/secrets/xyz');
 ```
 
 Available Drivers:

@@ -141,7 +141,8 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     private function _getContentType($objectId): string
     {
-        switch (pathinfo($objectId)['extension']) {
+        $pathInfo = pathinfo($objectId);
+        switch (phore_pluck('extension', $pathInfo, "")) {
             case "bin":
                 return "application/octet-stream";
             case "txt":

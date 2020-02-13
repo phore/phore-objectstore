@@ -10,8 +10,10 @@ namespace Phore\ObjectStore;
 
 
 use Phore\ObjectStore\Driver\AzureObjectStoreDriver;
+use Phore\ObjectStore\Driver\FileSystemObjectStoreDriver;
 use Phore\ObjectStore\Driver\GoogleObjectStoreDriver;
 use Phore\ObjectStore\Driver\ObjectStoreDriver;
+use Phore\ObjectStore\Driver\PhoreGoogleObjectStoreDriver;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 
 
@@ -52,6 +54,40 @@ class ObjectStore
             case 'google-cloud-storage':
                 return new ObjectStore(new GoogleObjectStoreDriver($credentials, $bucketName));
         }
+    }
+
+    /**
+     * @param string $uri
+     * @return ObjectStore
+     * @throws \Phore\FileSystem\Exception\FileAccessException
+     * @throws \Phore\FileSystem\Exception\FileNotFoundException
+     * @throws \Phore\FileSystem\Exception\FileParsingException
+     * @throws \Phore\HttpClient\Ex\PhoreHttpRequestException
+     * @throws \InvalidArgumentException
+     * @throws \Exception
+     */
+    public static function Connect(string $uri) {
+        $uriParts = phore_parse_url($uri);
+        $bucketName = $uriParts->host;
+        switch ($uriParts->scheme) {
+            case 'gcsnd':
+                $keyFilePath = $uriParts->getQueryVal('keyfile', new \InvalidArgumentException("Missing keyfile in objectstore URI."));
+                return new ObjectStore(new GoogleObjectStoreDriver($keyFilePath, $bucketName));
+            case 'gcs':
+                $keyFilePath = $uriParts->getQueryVal('keyfile', new \InvalidArgumentException("Missing keyfile in objectstore URI."));
+                return new ObjectStore(new PhoreGoogleObjectStoreDriver($keyFilePath, $bucketName));
+            case 'azbsnd':
+                $account = $uriParts->getQueryVal('account', new \InvalidArgumentException("Missing account in objectstore URI."));
+                $keyFilePath = $uriParts->getQueryVal('keyfile', new \InvalidArgumentException("Missing key in objectstore URI."));
+                $key = phore_file($keyFilePath)->get_contents();
+                return new ObjectStore(new AzureObjectStoreDriver($account, $key, $bucketName));
+            case 'file':
+                return new ObjectStore(new FileSystemObjectStoreDriver($bucketName));
+        }
+
+        throw new \Exception("Invalid scheme for '$uri'");
+
+
     }
 
     public function getDriver() : ObjectStoreDriver
