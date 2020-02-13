@@ -20,6 +20,26 @@ echo $store->object("object/some.json")->get();
 ```
 
 
+## Driver
+
+The object store can be created with
+
+```php
+$objectStore = ObjectStore::Create('gcs://some-bucket?keyfile=/run/secrets/xyz');
+```
+
+Available Drivers:
+
+| driver | driver class | example |
+|--------|-------------|---------|
+| Google Bucket                                                                 | `PhoreGoogleCloudStoreDriver`     | `gcs://<bucket-name>?keyfile=/run/secrets/google-key-1` |
+| Google Bucket Native Driver (Requires `google/cloud-storage`)                 | `GoogleCloudStoreDriver`          | `gcsnd://<bucket-name>?keyfile=/run/secret/google-key-1` |
+| Azure Block Storage                                                           | `--`          | `azbs://<bucket-name>?account=<account>&keyfile=/run/secrets/az-key-1` |
+| Azure Block Storage Native Driver (Requires `microsoft/azure-storage-blob`)   | `AzureObjectStoreDriver`          | `azbsnd://<bucket-name>?account=<account>&keyfile=/run/secrets/az-key-1` |
+| Filesystem driver                                                             | `FileSystemObjectStoreDriver`     | `file://path/` |
+     
+
+
 
 ## Develop
 
