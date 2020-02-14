@@ -797,12 +797,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "8459330a3ee60b640ddce8462eb50c71f617d545"
+                "reference": "1183e9248a54f45a8bd77fc70b9e79f727a067a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/8459330a3ee60b640ddce8462eb50c71f617d545",
-                "reference": "8459330a3ee60b640ddce8462eb50c71f617d545",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/1183e9248a54f45a8bd77fc70b9e79f727a067a9",
+                "reference": "1183e9248a54f45a8bd77fc70b9e79f727a067a9",
                 "shasum": ""
             },
             "require": {
@@ -870,7 +870,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2020-01-30T07:22:59+00:00"
+            "time": "2020-02-14T07:41:48+00:00"
         },
         {
             "name": "myclabs/deep-copy",

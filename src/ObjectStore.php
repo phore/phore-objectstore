@@ -82,7 +82,7 @@ class ObjectStore
                 $key = phore_file($keyFilePath)->get_contents();
                 return new ObjectStore(new AzureObjectStoreDriver($account, $key, $bucketName));
             case 'file':
-                return new ObjectStore(new FileSystemObjectStoreDriver($bucketName));
+                return new ObjectStore(new FileSystemObjectStoreDriver("/".$bucketName));
         }
 
         throw new \Exception("Invalid scheme for '$uri'");

@@ -33,7 +33,7 @@ class ObjectStoreTest extends TestCase
 
     public function testConnectFromUriFile()
     {
-        $objectStore = ObjectStore::Connect("file://test");
+        $objectStore = ObjectStore::Connect("file://tmp");
         $this->assertInstanceOf(FileSystemObjectStoreDriver::class, $objectStore->getDriver());
     }
 
@@ -59,7 +59,7 @@ class ObjectStoreTest extends TestCase
     public function testConnectFromInvalidUriNoAccessFile()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Root directory 'fail' not accessible");
+        $this->expectExceptionMessage("Root directory '/fail' not accessible");
         ObjectStore::Connect("file://fail");
     }
 
