@@ -211,7 +211,7 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
             } catch (ServiceException $e) {
                 throw $e;
             }
-            //$listBlobsOptions->setContinuationToken($blob_list->getContinuationToken());
+            $listBlobsOptions->setContinuationToken($blob_list->getContinuationToken());
         } while ($blob_list->getContinuationToken());
         return $blobList;
     }
