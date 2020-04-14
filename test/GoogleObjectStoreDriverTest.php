@@ -3,8 +3,8 @@
 namespace test;
 
 use Google\Cloud\Core\Exception\GoogleException;
+use Google\Cloud\Core\Exception\NotFoundException;
 use Google\Cloud\Core\Exception\ServiceException;
-use Phore\Core\Exception\NotFoundException;
 use Phore\ObjectStore\Driver\GoogleObjectStoreDriver;
 use PHPUnit\Framework\TestCase;
 
@@ -74,4 +74,5 @@ class GoogleObjectStoreDriverTest extends TestCase
         $this->assertEquals('234567', $this->driver->getMeta('test/test.txt')['metadata']['filesize']);
         $this->driver->remove('test/test.txt');
     }
+
 }
