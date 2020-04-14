@@ -106,7 +106,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $objectId
      * @param array|null $meta
      * @return StreamInterface
-     * @throws Exception|NotFoundException
+     * @throws Exception
      */
     public function get(string $objectId, array &$meta = null): string
     {
@@ -119,8 +119,6 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
                     $meta = $info['metadata'];
                 }
                 return $data;
-            } catch (NotFoundException $e) {
-                throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
             } catch (Exception $e) {
                 if ($i > 2) {
                     throw $e;
@@ -135,25 +133,18 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $objectId
      * @param array|null $meta
      * @return StreamInterface
-     * @throws NotFoundException
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
-        try {
-            $object = $this->bucket->object($objectId);
-            $stream = $object->downloadAsStream();
+        $object = $this->bucket->object($objectId);
+        $stream = $object->downloadAsStream();
 
-            $info = $object->info();
-            if (isset ($info['metadata'])) {
-                $meta = $info['metadata'];
-            }
-
-            return $stream;
-        } catch (NotFoundException $e) {
-            throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
+        $info = $object->info();
+        if (isset ($info['metadata'])) {
+            $meta = $info['metadata'];
         }
+        return $stream;
     }
-
 
     /**
      * @return Bucket
@@ -162,7 +153,6 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
     {
         return $this->bucket;
     }
-
 
     /**
      * @param callable $walkFunction
@@ -185,7 +175,6 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
         return true;
     }
 
-
     /**
      * @param string $objectId
      * @return array
@@ -205,33 +194,22 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
         $this->bucket->object($objectId)->update(['metadata' => $metadata]);
     }
 
-
     /**
      * @param string $objectId
-     * @throws NotFoundException
      */
     public function remove(string $objectId): void
     {
-        try {
-            $this->bucket->object($objectId)->delete();
-        } catch (NotFoundException $e) {
-            throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
+        $this->bucket->object($objectId)->delete();
     }
 
     /**
      * @param string $objectId
      * @param string $newObjectId
-     * @throws NotFoundException
      */
     public function rename(string $objectId, string $newObjectId): void
     {
-        try {
-            $object = $this->bucket->object($objectId);
-            $object->rename($newObjectId);
-        } catch (NotFoundException $e) {
-            throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
+        $object = $this->bucket->object($objectId);
+        $object->rename($newObjectId);
     }
 
     /**

@@ -19,9 +19,9 @@ class GoogleObjectStoreDriverTest extends TestCase
     {
         $keyFilePath = '/run/secrets/google_test';
         $this->driver = new GoogleObjectStoreDriver($keyFilePath, 'phore-test2');
-        try {
+        $objectId = 'test/test.txt';
+        if($this->driver->has($objectId)){
             $this->driver->remove('test/test.txt');
-        } catch (NotFoundException $e) {
         }
     }
 
