@@ -11,14 +11,18 @@ namespace Phore\ObjectStore\Driver;
 
 use DateTime;
 use Exception;
-use Google\Cloud\Core\Exception\NotFoundException;
+use Google\Cloud\Core\Exception\GoogleException;
 use Google\Cloud\Storage\Bucket;
 use Google\Cloud\Storage\StorageClient;
-
 use InvalidArgumentException;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 use Psr\Http\Message\StreamInterface;
 
+/**
+ * Class GoogleObjectStoreDriver
+ * @package Phore\ObjectStore\Driver
+ * @implements ObjectStoreDriver
+ */
 class GoogleObjectStoreDriver implements ObjectStoreDriver
 {
 
@@ -127,6 +131,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
                 continue;
             }
         }
+        throw new GoogleException('it was not possible to create the GoogleBucket', 500);
     }
 
     /**
@@ -237,8 +242,11 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
         return true;
     }
 
+
     /**
-     * @param string|null $prefix
+     * list all objects in the bucket.
+     *
+     * @param string $prefix
      * @return array
      */
     public function list(string $prefix = null): array

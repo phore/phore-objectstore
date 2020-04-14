@@ -413,7 +413,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         throw new InvalidArgumentException('Method not implemented.');
     }
 
-    public function list(string $prefix): array
+    public function list(string $prefix = null): array
     {
         // TODO: Implement list() method.
     }

@@ -139,24 +139,7 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
         $this->blobClient->deleteBlob($this->containerName, $objectId);
     }
 
-    /**
-     * @param string $objectId
-     * @param string $data
-     * @return mixed|void
-     * @throws NotFoundException
-     */
-    public function append(string $objectId, string $data)
-    {
-        $leaseID = $this->blobClient->acquireLease($this->containerName, $objectId, null, 60)->getLeaseId();
-        $blobOptions = new CreateBlockBlobOptions();
-        $blobOptions->setLeaseId($leaseID);
-        $content = $this->get($objectId, $meta);
-        $content .= $data;
-        $blobOptions->setMetadata($meta);
-        $this->blobClient->createBlockBlob($this->containerName, $objectId, $content, $blobOptions);
-        $this->blobClient->releaseLease($this->containerName, $objectId, $leaseID);
 
-    }
 
     /**
      * @param string $objectId
@@ -191,6 +174,8 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
     }
 
     /**
+     * list all objects in the bucket.
+     *
      * @param string $prefix
      * @return array
      */
@@ -216,4 +201,27 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
         return $blobList;
     }
 
+    /**
+     * If object exists:
+     * -> Append data
+     *
+     * If not:
+     * -> Write data to new object file
+     *
+     * @param string $objectId
+     * @param string $data
+     * @return mixed
+     * @throws NotFoundException
+     */
+    public function append(string $objectId, string $data)
+    {
+        $leaseID = $this->blobClient->acquireLease($this->containerName, $objectId, null, 60)->getLeaseId();
+        $blobOptions = new CreateBlockBlobOptions();
+        $blobOptions->setLeaseId($leaseID);
+        $content = $this->get($objectId, $meta);
+        $content .= $data;
+        $blobOptions->setMetadata($meta);
+        $this->blobClient->createBlockBlob($this->containerName, $objectId, $content, $blobOptions);
+        $this->blobClient->releaseLease($this->containerName, $objectId, $leaseID);
+    }
 }

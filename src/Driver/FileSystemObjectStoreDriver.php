@@ -186,7 +186,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         $file->set_json($metadata);
     }
 
-    public function list(string $prefix): array
+    public function list(string $prefix = null): array
     {
         // TODO: Implement list() method.
     }

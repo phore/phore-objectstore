@@ -62,6 +62,8 @@ interface ObjectStoreDriver
     public function remove(string $objectId);
 
     /**
+     * removes an existing object
+     *
      * @param string $objectId
      * @param string $newObjectId
      * @throws NotFoundException
@@ -82,7 +84,7 @@ interface ObjectStoreDriver
     public function append(string $objectId, string $data);
 
     /**
-     *
+     * gets the metadata of an existing object
      *
      * @param string $objectId
      * @return array        Empty array if object not found
@@ -90,6 +92,8 @@ interface ObjectStoreDriver
     public function getMeta(string $objectId): array;
 
     /**
+     * sets/updates the metadata of an object
+     *
      * @param string $objectId
      * @param array $metadata
      * @return mixed
@@ -104,9 +108,11 @@ interface ObjectStoreDriver
     public function walk(callable $walkFunction): bool;
 
     /**
+     * list all objects in the bucket.
+     *
      * @param string $prefix
      * @return array
      */
-    public function list(string $prefix): array;
+    public function list(string $prefix = null): array;
 
 }
