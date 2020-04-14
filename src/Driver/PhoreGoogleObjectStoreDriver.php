@@ -3,11 +3,14 @@
 
 namespace Phore\ObjectStore\Driver;
 
+use Exception;
+use InvalidArgumentException;
 use Phore\Core\Exception\NotFoundException;
+use Phore\FileSystem\Exception\FileNotFoundException;
+use Phore\FileSystem\Exception\FileParsingException;
+use Phore\FileSystem\PhoreFile;
 use Phore\HttpClient\Ex\PhoreHttpRequestException;
 use Psr\Http\Message\StreamInterface;
-
-
 
 
 /**
@@ -17,20 +20,20 @@ use Psr\Http\Message\StreamInterface;
 class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
 {
     const BASE_URI = 'https://storage.googleapis.com/storage/v1/';
-    const UPLOAD_URI = "https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o";//{?query*}';
-    const DOWNLOAD_URI = "https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}";//{?query*}';
+    const UPLOAD_URI = 'https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o';//{?query*}';
+    const DOWNLOAD_URI = 'https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}';//{?query*}';
 
     /**
      * @var string
      */
-    private $base_url = "https://storage.googleapis.com/storage/v1";
+    private $base_url = 'https://storage.googleapis.com/storage/v1';
 
     /**
      * @var string
      */
     private $bucketName;
     /**
-     * @var array|\Phore\FileSystem\PhoreFile
+     * @var array|PhoreFile
      */
     private $config;
     /**
@@ -53,21 +56,22 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $configFilePath
      * @param string $bucketName
      * @param bool $retry
-     * @throws \Phore\FileSystem\Exception\FileNotFoundException
-     * @throws \Phore\FileSystem\Exception\FileParsingException
+     * @throws FileNotFoundException
+     * @throws FileParsingException
      * @throws PhoreHttpRequestException
      */
     public function __construct(string $configFilePath, string $bucketName, bool $retry = false)
     {
         $this->config = phore_file($configFilePath)->get_json();
         $this->bucketName = $bucketName;
-        $this->base_url .= "/b/".$bucketName;
+        $this->base_url .= '/b/' . $bucketName;
         $this->retry = $retry;
 
         $this->accessToken = $this->_getJwt()['access_token'];
     }
 
-    public function setRetries(int $retries){
+    public function setRetries(int $retries)
+    {
         $this->retries = $retries;
     }
 
@@ -83,30 +87,30 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     /**
      * @return array
      * @throws PhoreHttpRequestException
-     * @throws \Exception
+     * @throws Exception
      */
     private function _getJwt()
     {
 
-        $header = ["alg" => "RS256", "typ" => "JWT"];
+        $header = ['alg' => 'RS256', 'typ' => 'JWT'];
 
         $time = time();
 
         $payload['iss'] = $this->config['client_email'];
-        $payload['scope'] = "https://www.googleapis.com/auth/devstorage.full_control";
+        $payload['scope'] = 'https://www.googleapis.com/auth/devstorage.full_control';
         $payload['aud'] = $this->config['token_uri'];
-        $payload['exp'] = $time+3600;
+        $payload['exp'] = $time + 3600;
         $payload['iat'] = $time;
 
         $b64header = $this->_base64Enc(json_encode($header));
         $b64payload = $this->_base64Enc(json_encode($payload));
 
-        if ( ! openssl_sign($b64header . "." . $b64payload, $signature, $this->config['private_key'], OPENSSL_ALGO_SHA256))
-            throw new \Exception("Cannot openssl_sign payload: ");
+        if (!openssl_sign($b64header . '.' . $b64payload, $signature, $this->config['private_key'], OPENSSL_ALGO_SHA256))
+            throw new Exception('Cannot openssl_sign payload: ');
 
-        $signedToken = $b64header . "." . $b64payload . "." . $this->_base64Enc($signature);
+        $signedToken = $b64header . '.' . $b64payload . '.' . $this->_base64Enc($signature);
 
-        return phore_http_request("https://oauth2.googleapis.com/token")->withPostFormBody(["grant_type" => "urn:ietf:params:oauth:grant-type:jwt-bearer", "assertion" => $signedToken])->send()->getBodyJson();
+        return phore_http_request('https://oauth2.googleapis.com/token')->withPostFormBody(['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $signedToken])->send()->getBodyJson();
     }
 
     /**
@@ -116,7 +120,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function has(string $objectId): bool
     {
-        $i=0;
+        $i = 0;
         do {
             try {
                 phore_http_request(self::DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
@@ -127,34 +131,36 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     $i++;
                     continue;
                 }
-                if($ex->getCode() === 404) {
+                if ($ex->getCode() === 404) {
                     return false;
                 }
                 throw $ex;
             }
-        }while($i < $this->retries && $this->retry);
+        } while ($i < $this->retries && $this->retry);
     }
 
     /**
      * @param $objectId
      * @return string
+     * @throws Exception
+     * @throws Exception
      */
     private function _getContentType($objectId): string
     {
         $pathInfo = pathinfo($objectId);
-        switch (phore_pluck('extension', $pathInfo, "")) {
-            case "bin":
-                return "application/octet-stream";
-            case "txt":
-                return "text/plain";
-            case "json":
-                return "application/json";
-            case "csv":
-                return "text/csv";
-            case "yml":
-                return "text/yaml";
+        switch (phore_pluck('extension', $pathInfo, '')) {
+            case 'bin':
+                return 'application/octet-stream';
+            case 'txt':
+                return 'text/plain';
+            case 'json':
+                return 'application/json';
+            case 'csv':
+                return 'text/csv';
+            case 'yml':
+                return 'text/yaml';
             default:
-                return "application/octet-stream";
+                return 'application/octet-stream';
         }
     }
 
@@ -166,12 +172,12 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function put(string $objectId, $content, array $metadata = null)
     {
-        $i=0;
+        $i = 0;
 
-        if($metadata === null) {
+        if ($metadata === null) {
             do {
                 try {
-                    phore_http_request(self::UPLOAD_URI . "?uploadType=media&name={object}", ['bucket' => $this->bucketName, 'object' => $objectId])
+                    phore_http_request(self::UPLOAD_URI . '?uploadType=media&name={object}', ['bucket' => $this->bucketName, 'object' => $objectId])
                         ->withBearerAuth($this->accessToken)
                         ->withPostBody($content)->withHeaders(['Content-Type' => $this->_getContentType($objectId)])->send();
                     return true;
@@ -182,20 +188,20 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     }
                     return false;
                 }
-            }while($i < $this->retries && $this->retry);
+            } while ($i < $this->retries && $this->retry);
         }
-        $meta['name']=$objectId;
+        $meta['name'] = $objectId;
         $meta['metadata'] = $metadata;
         if (is_array($content) || is_object($content)) {
             $content = phore_json_encode($content);
         }
         $meta = phore_json_encode($meta);
-        $delimiter = "delimiter";
+        $delimiter = 'delimiter';
         $body = "--$delimiter\nContent-Type: application/json; charset=UTF-8\n\n$meta\n\n--$delimiter\nContent-Type: {$this->_getContentType($objectId)}\n\n$content\n--$delimiter--";
 
         do {
             try {
-                phore_http_request(self::UPLOAD_URI . "?uploadType=multipart", ['bucket' => $this->bucketName])
+                phore_http_request(self::UPLOAD_URI . '?uploadType=multipart', ['bucket' => $this->bucketName])
                     ->withBearerAuth($this->accessToken)
                     ->withPostBody($body)->withHeaders(['Content-Type' => "multipart/related; boundary=$delimiter"])->send();
                 return true;
@@ -206,17 +212,17 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                 }
                 return false;
             }
-        }while($i < $this->retries && $this->retry);
+        } while ($i < $this->retries && $this->retry);
     }
 
     /**
      * @param string $objectId
-     * @param $ressource
+     * @param $resource
      * @param array|null $metadata
      */
-    public function putStream(string $objectId, $ressource, array $metadata = null)
+    public function putStream(string $objectId, $resource, array $metadata = null)
     {
-        throw new \InvalidArgumentException("Method not implemented.");
+        throw new InvalidArgumentException('Method not implemented.');
     }
 
     /**
@@ -228,10 +234,10 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function get(string $objectId, array &$meta = null): string
     {
-        $i=0;
+        $i = 0;
         do {
             try {
-                return phore_http_request(self::DOWNLOAD_URI . "?alt=media", ['bucket' => $this->bucketName, 'object' => $objectId])
+                return phore_http_request(self::DOWNLOAD_URI . '?alt=media', ['bucket' => $this->bucketName, 'object' => $objectId])
                     ->withBearerAuth($this->accessToken)->send()->getBody();
             } catch (PhoreHttpRequestException $ex) {
                 if ($this->retry) {
@@ -244,7 +250,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     throw $ex;
                 }
             }
-        }while($i < $this->retries && $this->retry);
+        } while ($i < $this->retries && $this->retry);
     }
 
 
@@ -255,7 +261,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
-        throw new \InvalidArgumentException("Method not implemented.");
+        throw new InvalidArgumentException('Method not implemented.');
     }
 
     /**
@@ -266,7 +272,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function remove(string $objectId)
     {
-        $i=0;
+        $i = 0;
         do {
             try {
                 return phore_http_request(self::DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
@@ -282,7 +288,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     throw $ex;
                 }
             }
-        }while($i < $this->retries && $this->retry);
+        } while ($i < $this->retries && $this->retry);
     }
 
     /**
@@ -293,15 +299,15 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function rename(string $objectId, string $newObjectId)
     {
-        if($this->has($newObjectId)){
-            throw new \InvalidArgumentException("Cannot rename '$objectId'. ObjectId '$newObjectId' already in use.");
+        if ($this->has($newObjectId)) {
+            throw new InvalidArgumentException("Cannot rename '$objectId'. ObjectId '$newObjectId' already in use.");
         }
 
-        $i=0;
+        $i = 0;
         do {
             try {
-                return phore_http_request(self::DOWNLOAD_URI."/copyTo/b/{bucket}/o/{newObjectId}",
-                                          ['bucket' => $this->bucketName, 'object' => $objectId, 'newObjectId' => $newObjectId])
+                return phore_http_request(self::DOWNLOAD_URI . '/copyTo/b/{bucket}/o/{newObjectId}',
+                    ['bucket' => $this->bucketName, 'object' => $objectId, 'newObjectId' => $newObjectId])
                     ->withBearerAuth($this->accessToken)
                     ->withPostBody()
                     ->send()
@@ -314,7 +320,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                 throw $ex;
 
             }
-        }while($i < $this->retries && $this->retry);
+        } while ($i < $this->retries && $this->retry);
     }
 
     /**
@@ -322,31 +328,31 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $data
      * @return array|bool|mixed
      * @throws PhoreHttpRequestException
-     * @throws \Exception
+     * @throws Exception
      */
     public function append(string $objectId, string $data)
     {
         $meta = $this->getMeta($objectId);
-        if($meta === []) {
+        if ($meta === []) {
             $this->put($objectId, $data);
             return true;
         }
 
-        $ext = pathinfo($objectId)["extension"];
-        if ($ext != "") {
+        $ext = pathinfo($objectId)['extension'];
+        if ($ext != '') {
             $ext = ".$ext";
         }
-        $tmpId = "/tmp/" . time() . "-" . sha1(microtime(true) . uniqid()) . "$ext";
+        $tmpId = '/tmp/' . time() . '-' . sha1(microtime(true) . uniqid()) . "$ext";
         $this->put($tmpId, $data);
-        $body['kind'] = "storage#composeRequest";
+        $body['kind'] = 'storage#composeRequest';
         $body['sourceObjects'] = [['name' => $objectId], ['name' => $tmpId]];
         $body['destination'] = $meta;
 
-        $i=0;
+        $i = 0;
         do {
             try {
-                $objectMeta = phore_http_request(self::DOWNLOAD_URI . "/compose", ['bucket' => $this->bucketName, 'object' => $objectId])
-                                                ->withBearerAuth($this->accessToken)->withPostBody($body)->send()->getBodyJson();
+                $objectMeta = phore_http_request(self::DOWNLOAD_URI . '/compose', ['bucket' => $this->bucketName, 'object' => $objectId])
+                    ->withBearerAuth($this->accessToken)->withPostBody($body)->send()->getBodyJson();
                 $this->remove($tmpId);
             } catch (PhoreHttpRequestException $ex) {
                 if ($this->retry) {
@@ -354,12 +360,12 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     continue;
                 }
 
-                    throw $ex;
+                throw $ex;
 
             }
-        }while($i < $this->retries && $this->retry);
+        } while ($i < $this->retries && $this->retry);
 
-        if(phore_pluck('name', $objectMeta) === $objectId) {
+        if (phore_pluck('name', $objectMeta) === $objectId) {
             return true;
         }
         return false;
@@ -371,7 +377,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function getMeta(string $objectId): array
     {
-        $i=0;
+        $i = 0;
         do {
             try {
                 return phore_http_request(self::DOWNLOAD_URI, ['bucket' => $this->bucketName, 'object' => $objectId])
@@ -381,11 +387,11 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                     $i++;
                     continue;
                 }
-                if($ex->getCode() === 404) {
+                if ($ex->getCode() === 404) {
                     return [];
                 }
             }
-        }while($i < $this->retries && $this->retry);
+        } while ($i < $this->retries && $this->retry);
     }
 
     /**
@@ -395,7 +401,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function setMeta(string $objectId, array $metadata)
     {
-        throw new \InvalidArgumentException("Metadata cannot be set. Method not implemented.");
+        throw new InvalidArgumentException('Metadata cannot be set. Method not implemented.');
     }
 
     /**
@@ -404,6 +410,11 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function walk(callable $walkFunction): bool
     {
-        throw new \InvalidArgumentException("Method not implemented.");
+        throw new InvalidArgumentException('Method not implemented.');
+    }
+
+    public function list(string $prefix): array
+    {
+        // TODO: Implement list() method.
     }
 }

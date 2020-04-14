@@ -12,25 +12,47 @@ namespace Phore\ObjectStore\Driver;
 use Phore\Core\Exception\NotFoundException;
 use Psr\Http\Message\StreamInterface;
 
+/**
+ * Interface ObjectStoreDriver
+ * @package Phore\ObjectStore\Driver
+ */
 interface ObjectStoreDriver
 {
-    public function has(string $objectId) : bool;
-    public function put(string $objectId, $content, array $metadata=null);
-    public function putStream(string $objectId, $ressource, array $metadata=null);
+    /**
+     * @param string $objectId
+     * @return bool
+     */
+    public function has(string $objectId): bool;
 
     /**
      * @param string $objectId
-     * @return StreamInterface
-     * @throws NotFoundException
+     * @param $content
+     * @param array|null $metadata
+     * @return mixed
      */
-    public function get(string $objectId, array &$meta=null) : string;
-    
+    public function put(string $objectId, $content, array $metadata = null);
+
     /**
      * @param string $objectId
-     * @return StreamInterface
-     * @throws  NotFoundException
+     * @param $resource
+     * @param array|null $metadata
+     * @return mixed
      */
-    public function getStream(string $objectId, array &$meta=null) : StreamInterface;
+    public function putStream(string $objectId, $resource, array $metadata = null);
+
+    /**
+     * @param string $objectId
+     * @param array|null $meta
+     * @return StreamInterface
+     */
+    public function get(string $objectId, array &$meta = null): string;
+
+    /**
+     * @param string $objectId
+     * @param array|null $meta
+     * @return StreamInterface
+     */
+    public function getStream(string $objectId, array &$meta = null): StreamInterface;
 
 
     /**
@@ -75,5 +97,16 @@ interface ObjectStoreDriver
     public function setMeta(string $objectId, array $metadata);
 
 
-    public function walk(callable $walkFunction) : bool;
+    /**
+     * @param callable $walkFunction
+     * @return bool
+     */
+    public function walk(callable $walkFunction): bool;
+
+    /**
+     * @param string $prefix
+     * @return array
+     */
+    public function list(string $prefix): array;
+
 }

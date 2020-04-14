@@ -191,10 +191,10 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
     }
 
     /**
-     * @param null $prefix
+     * @param string $prefix
      * @return array
      */
-    public function list($prefix = null): array
+    public function list(string $prefix = null): array
     {
         $listBlobsOptions = new ListBlobsOptions();
         if ($prefix !== null) {

@@ -1036,12 +1036,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-filesystem.git",
-                "reference": "c343e2ce9697ed03436d81feeeebbd8e9b9cd795"
+                "reference": "6c8f0cf1c3a26944f996b50a707cedbb73c16c30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-filesystem/zipball/c343e2ce9697ed03436d81feeeebbd8e9b9cd795",
-                "reference": "c343e2ce9697ed03436d81feeeebbd8e9b9cd795",
+                "url": "https://api.github.com/repos/phore/phore-filesystem/zipball/6c8f0cf1c3a26944f996b50a707cedbb73c16c30",
+                "reference": "6c8f0cf1c3a26944f996b50a707cedbb73c16c30",
                 "shasum": ""
             },
             "require": {
@@ -1075,7 +1075,7 @@
             ],
             "description": "Acces files layer",
             "homepage": "http://infracamp.org/project/phore",
-            "time": "2020-03-12T22:47:17+00:00"
+            "time": "2020-04-14T08:27:09+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -1083,12 +1083,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionCommon.git",
-                "reference": "b0843c8cbcc2dc5eda5158e583c7199a5e44c86d"
+                "reference": "74a67151cce1fe4aa5960636ae510ddf1faefdb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/b0843c8cbcc2dc5eda5158e583c7199a5e44c86d",
-                "reference": "b0843c8cbcc2dc5eda5158e583c7199a5e44c86d",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/74a67151cce1fe4aa5960636ae510ddf1faefdb3",
+                "reference": "74a67151cce1fe4aa5960636ae510ddf1faefdb3",
                 "shasum": ""
             },
             "require": {
@@ -1127,7 +1127,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2019-12-20T12:45:35+00:00"
+            "time": "2020-04-10T20:41:10+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -1549,12 +1549,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a75dfcec597379a04a62ffa70b4b8dc0db70fc6f"
+                "reference": "7482fe21028660856590a54181e345e974f41f2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a75dfcec597379a04a62ffa70b4b8dc0db70fc6f",
-                "reference": "a75dfcec597379a04a62ffa70b4b8dc0db70fc6f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7482fe21028660856590a54181e345e974f41f2c",
+                "reference": "7482fe21028660856590a54181e345e974f41f2c",
                 "shasum": ""
             },
             "require": {
@@ -1624,7 +1624,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2020-04-07T06:31:18+00:00"
+            "time": "2020-04-13T15:27:25+00:00"
         },
         {
             "name": "psr/cache",

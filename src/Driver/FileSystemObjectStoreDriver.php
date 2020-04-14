@@ -9,7 +9,14 @@
 namespace Phore\ObjectStore\Driver;
 
 
+use InvalidArgumentException;
 use Phore\Core\Exception\NotFoundException;
+use Phore\FileSystem\Exception\FileAccessException;
+use Phore\FileSystem\Exception\FileNotFoundException;
+use Phore\FileSystem\Exception\FileParsingException;
+use Phore\FileSystem\Exception\FilesystemException;
+use Phore\FileSystem\Exception\PathOutOfBoundsException;
+use Phore\FileSystem\PhoreDirectory;
 use Phore\FileSystem\PhoreFile;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 use Psr\Http\Message\StreamInterface;
@@ -18,22 +25,22 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
 {
 
     /**
-     * @var \Phore\FileSystem\PhoreDirectory
+     * @var PhoreDirectory
      */
     private $rootDir;
 
     public function __construct(string $rootDir)
     {
         if (!class_exists('\Phore\FileSystem\PhoreDirectory'))
-            throw new \InvalidArgumentException("PhoreFilesystem is currently not installed. Install phore/filesystem to use FileSystemObjectStoreDriver");
+            throw new InvalidArgumentException('PhoreFilesystem is currently not installed. Install phore/filesystem to use FileSystemObjectStoreDriver');
         $rootDirAbs = realpath($rootDir);
         if ($rootDirAbs === false)
-            throw new \InvalidArgumentException("Root directory '$rootDir' not accessible");
+            throw new InvalidArgumentException("Root directory '$rootDir' not accessible");
         $this->rootDir = phore_dir($rootDirAbs);
     }
 
 
-    const META_SUFFIX = ".~META~";
+    const META_SUFFIX = '.~META~';
 
     public function has(string $objectId): bool
     {
@@ -44,23 +51,28 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     {
         $file = $this->rootDir->withSubPath($objectId)->asFile();
         $dir = $file->getDirname()->asDirectory();
-        if ( ! $dir->isDirectory())
+        if (!$dir->isDirectory())
             $dir->mkdir();
         $file->set_contents($content);
         if ($metadata !== null)
             $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile()->set_json($metadata);
     }
 
-    public function putStream(string $objectId, $ressource, array $metadata = null)
+    public function putStream(string $objectId, $resource, array $metadata = null)
     {
-        throw new \InvalidArgumentException("Not implemented yet.");
+        throw new InvalidArgumentException('Not implemented yet.');
         // TODO: Implement putStream() method.
     }
 
     /**
      * @param string $objectId
+     * @param array|null $meta
      * @return StreamInterface
      * @throws NotFoundException
+     * @throws FileAccessException
+     * @throws FileNotFoundException
+     * @throws FileParsingException
+     * @throws PathOutOfBoundsException
      */
     public function get(string $objectId, array &$meta = null): string
     {
@@ -69,24 +81,25 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
             $meta = $metaFile->get_json();
 
         $file = $this->rootDir->withSubPath($objectId)->asFile();
-        if ( ! $file->isFile())
-            throw new NotFoundException("Object '$objectId' not existing.", 0 );
+        if (!$file->isFile())
+            throw new NotFoundException("Object '$objectId' not existing.", 0);
         return $file->get_contents();
     }
 
     /**
      * @param string $objectId
+     * @param array|null $meta
      * @return StreamInterface
-     * @throws  NotFoundException
+     * @throws PathOutOfBoundsException
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
-        return $this->rootDir->withSubPath($objectId)->asFile()->fopen("r");
+        return $this->rootDir->withSubPath($objectId)->asFile()->fopen('r');
     }
 
     /**
      * @param string $objectId
-     * @throws NotFoundException
+     * @throws PathOutOfBoundsException|FileAccessException
      */
     public function remove(string $objectId)
     {
@@ -100,34 +113,33 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     /**
      * @param string $objectId
      * @param string $newObjectId
-     * @throws NotFoundException
      */
     public function rename(string $objectId, string $newObjectId)
     {
-        throw new \InvalidArgumentException("Not implemented yet.");
+        throw new InvalidArgumentException('Not implemented yet.');
         // TODO: Implement rename() method.
     }
 
     public function walk(callable $walkFunction): bool
     {
-        return $this->rootDir->walkR(function(PhoreFile $file) use ($walkFunction) {
+        return $this->rootDir->walkR(function (PhoreFile $file) use ($walkFunction) {
             if (endsWith($file, self::META_SUFFIX))
                 return true; // Ignore file
             $metaFile = phore_file($file . self::META_SUFFIX);
             $meta = [];
             if ($metaFile->isFile())
                 $meta = $metaFile->get_json();
-            if (false === $walkFunction(new ObjectStoreObject($this, substr($file, strlen($this->rootDir)+1), $meta)))
+            if (false === $walkFunction(new ObjectStoreObject($this, substr($file, strlen($this->rootDir) + 1), $meta)))
                 return false;
-            
         });
     }
 
     /**
      * @param string $objectId
-     * @param string $data
+     * @param string $appendData
      * @return mixed
-     * @throws NotFoundException
+     * @throws PathOutOfBoundsException
+     * @throws FilesystemException
      */
     public function append(string $objectId, string $appendData)
     {
@@ -145,8 +157,11 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      *
      * @param string $objectId
      * @return array        Empty array if object not found
+     * @throws FileNotFoundException
+     * @throws FileParsingException
+     * @throws PathOutOfBoundsException
      */
-    public function getMeta(string $objectId) : array
+    public function getMeta(string $objectId): array
     {
         $metaFile = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
         if ($metaFile->isFile())
@@ -158,14 +173,21 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * @param string $objectId
      * @param array $metadata
      * @return mixed
+     * @throws FileParsingException
+     * @throws PathOutOfBoundsException
      */
     public function setMeta(string $objectId, array $metadata)
     {
         $file = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
         $dir = $file->getDirname()->asDirectory();
-        if ( ! $dir->isDirectory())
+        if (!$dir->isDirectory())
             $dir->mkdir();
 
         $file->set_json($metadata);
+    }
+
+    public function list(string $prefix): array
+    {
+        // TODO: Implement list() method.
     }
 }
