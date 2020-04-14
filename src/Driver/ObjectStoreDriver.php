@@ -56,13 +56,15 @@ interface ObjectStoreDriver
 
 
     /**
+     * removes an existing object
+     *
      * @param string $objectId
      * @throws NotFoundException
      */
     public function remove(string $objectId);
 
     /**
-     * removes an existing object
+     * renames an existing object
      *
      * @param string $objectId
      * @param string $newObjectId
