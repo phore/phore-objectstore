@@ -226,7 +226,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * Example:
      * ```
      * // Get all objects beginning with the prefix 'test'
-     * $list = $driver->list('test');
+     * $list = $driver->list('google');
      *
      * Result object has following structure:
      *  Array
