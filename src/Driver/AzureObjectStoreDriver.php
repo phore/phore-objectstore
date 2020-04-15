@@ -179,9 +179,6 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
      * // Get all objects beginning with the prefix 'test'
      * $list = $driver->list('test');
      *
-     * foreach ($list as $object) {
-     *     echo $object['blobName'] . "\n" . $object['blobUrl'];
-     * }
      * Result object has following structure:
      *  Array
      *  (
