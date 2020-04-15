@@ -339,10 +339,10 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         }
 
         $ext = pathinfo($objectId)['extension'];
-        if ($ext != '') {
+        if ($ext !== '') {
             $ext = ".$ext";
         }
-        $tmpId = '/tmp/' . time() . '-' . sha1(microtime(true) . uniqid()) . "$ext";
+        $tmpId = '/tmp/' . time() . '-' . sha1(microtime(true) . uniqid('', true)) . (string)$ext;
         $this->put($tmpId, $data);
         $body['kind'] = 'storage#composeRequest';
         $body['sourceObjects'] = [['name' => $objectId], ['name' => $tmpId]];

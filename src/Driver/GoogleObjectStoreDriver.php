@@ -192,9 +192,9 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
     /**
      * @param string $objectId
      * @param array $metadata
-     * @return mixed|void
+     * @return void
      */
-    public function setMeta(string $objectId, array $metadata)
+    public function setMeta(string $objectId, array $metadata): void
     {
         $this->bucket->object($objectId)->update(['metadata' => $metadata]);
     }

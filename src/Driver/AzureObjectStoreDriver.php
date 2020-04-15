@@ -139,8 +139,6 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
         $this->blobClient->deleteBlob($this->containerName, $objectId);
     }
 
-
-
     /**
      * @param string $objectId
      * @return array
@@ -210,10 +208,10 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
      *
      * @param string $objectId
      * @param string $data
-     * @return mixed
+     * @return void
      * @throws NotFoundException
      */
-    public function append(string $objectId, string $data)
+    public function append(string $objectId, string $data): void
     {
         $leaseID = $this->blobClient->acquireLease($this->containerName, $objectId, null, 60)->getLeaseId();
         $blobOptions = new CreateBlockBlobOptions();

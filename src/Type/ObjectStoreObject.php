@@ -14,6 +14,10 @@ use Phore\ObjectStore\Driver\ObjectStoreDriver;
 
 use Psr\Http\Message\StreamInterface;
 
+/**
+ * Class ObjectStoreObject
+ * @package Phore\ObjectStore\Type
+ */
 class ObjectStoreObject
 {
 
@@ -21,53 +25,65 @@ class ObjectStoreObject
      * @var ObjectStoreDriver
      */
     private $driver;
+    /**
+     * @var string
+     */
     private $objectId;
+    /**
+     * @var array|null
+     */
     private $metaData;
 
-    public function __construct(ObjectStoreDriver $driver, string $objectId, array $metadata=null)
+    /**
+     * ObjectStoreObject constructor.
+     * @param ObjectStoreDriver $driver
+     * @param string $objectId
+     * @param array|null $metadata
+     */
+    public function __construct(ObjectStoreDriver $driver, string $objectId, array $metadata = null)
     {
         $this->driver = $driver;
         $this->objectId = $objectId;
         $this->metaData = $metadata;
     }
 
-    public function getObjectId() : string 
+    /**
+     * @return string
+     */
+    public function getObjectId(): string
     {
         return $this->objectId;
     }
-    
-    public function exists() : bool
+
+    /**
+     * @return bool
+     */
+    public function exists(): bool
     {
         return $this->driver->has($this->objectId);
     }
 
 
     /**
-     * @param string $objectId
      * @return string
-     * @throws NotFoundException
      */
-    public function get() : string
+    public function get(): string
     {
         return $this->driver->get($this->objectId, $this->metaData);
     }
 
     /**
-     * @param string $objectId
      * @return StreamInterface
-     * @throws NotFoundException
      */
-    public function getStream() : StreamInterface
+    public function getStream(): StreamInterface
     {
         return $this->driver->getStream($this->objectId, $this->metaData);
     }
 
     /**
-     * @param string $objectId
      * @return array
-     * @throws NotFoundException
      */
-    public function getJson () : array
+    public function getJson(): array
     {
         $data = $this->get();
         $ret = json_decode($data, true);
@@ -78,9 +94,8 @@ class ObjectStoreObject
 
     /**
      * @return array
-     * @throws NotFoundException
      */
-    public function getYaml() : array
+    public function getYaml(): array
     {
         $data = $this->get();
         $ret = yaml_parse($data);
@@ -88,29 +103,47 @@ class ObjectStoreObject
             throw new \InvalidArgumentException("Cannot yaml_parse data from object '$this->objectId'");
         return $ret;
     }
-    
 
-    public function put (string $data) : self
+
+    /**
+     * @param string $data
+     * @return $this
+     */
+    public function put(string $data): self
     {
         $this->driver->put($this->objectId, $data, $this->metaData);
         return $this;
     }
 
-    public function putJson (array $data) : self
+    /**
+     * @param array $data
+     * @return $this
+     */
+    public function putJson(array $data): self
     {
         $this->driver->put($this->objectId, json_encode($data), $this->metaData);
         return $this;
     }
 
-    public function putStream ($ressource) : self
+    /**
+     * @param $resource
+     * @return $this
+     */
+    public function putStream($resource): self
     {
-        $this->driver->putStream($this->objectId, $ressource, $this->metaData);
+        $this->driver->putStream($this->objectId, $resource, $this->metaData);
         return $this;
     }
 
-    public function getMeta($key=null, $default=null)
+    /**
+     * @param null $key
+     * @param null $default
+     * @return array|null
+     * @throws \Exception
+     */
+    public function getMeta($key = null, $default = null)
     {
-        if ( ! $this->metaData)
+        if (!$this->metaData)
             $this->metaData = $this->driver->getMeta($this->objectId);
         $data = $this->metaData;
         if ($key !== null)
@@ -118,14 +151,22 @@ class ObjectStoreObject
         return $data;
     }
 
-    public function setMeta(array $metaData) : self
+    /**
+     * @param array $metaData
+     * @return $this
+     */
+    public function setMeta(array $metaData): self
     {
         $this->metaData = $metaData;
         $this->driver->setMeta($this->objectId, $metaData);
         return $this;
     }
 
-    public function withMeta(array $metaData) : self
+    /**
+     * @param array $metaData
+     * @return $this
+     */
+    public function withMeta(array $metaData): self
     {
         $this->metaData = $metaData;
         return $this;
@@ -137,7 +178,7 @@ class ObjectStoreObject
      * @return ObjectStoreObject
      * @throws NotFoundException
      */
-    public function rename(string $newObjectName) : ObjectStoreObject
+    public function rename(string $newObjectName): ObjectStoreObject
     {
         $this->driver->rename($this->objectId, $newObjectName);
         return new ObjectStoreObject($this->driver, $newObjectName);
@@ -163,7 +204,6 @@ class ObjectStoreObject
     {
         $this->driver->append($this->objectId, $data);
     }
-
 
 
 }
