@@ -101,5 +101,7 @@ class AzureObjectStoreDriverTest extends TestCase
         $this->assertCount(164, $list);
         $list = $this->driver->list('test');
         $this->assertCount(4, $list);
+        $list = $this->driver->list('kuchen');
+        $this->assertCount(0, $list);
     }
 }

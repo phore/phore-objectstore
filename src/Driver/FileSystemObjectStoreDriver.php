@@ -221,10 +221,33 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     }
 
     /**
-     * list all objects in the bucket.
+     * list all objects in the bucket/container.
      *
-     * @param string|null $prefix
-     * @return array
+     * Example:
+     * ```
+     * // Get all objects beginning with the prefix 'test'
+     * $list = $driver->list('test');
+     *
+     * foreach ($list as $object) {
+     *     echo $object['blobName'] . "\n" . $object['blobUrl'];
+     * }
+     * Result object has following structure:
+     *  Array
+     *  (
+     *      [0] => Array
+     *             (
+     *                  [blobName] => googleConfig.json
+     *                  [blobUrl] => file://tmp/googleConfig.json
+     *             )
+     *      [1] => Array ....
+     * ```
+     * @param string|null $prefix [optional]
+     *     Configuration options.
+     *          @type string $prefix Result will contain only objects whose names, contains the prefix
+     *
+     *          @type null $prefix Result contains all objects in container
+     *
+     * @return array returns an empty array if no data is available
      */
     public function list(string $prefix = null): array
     {

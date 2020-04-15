@@ -23,5 +23,7 @@ class FileSystemObjectStoreDriverTest extends TestCase
         $this->assertArrayHasKey('blobName', $list[0]);
         $this->assertArrayHasKey('blobUrl', $list[0]);
         $this->assertEquals('googleConfig.json', $list[0]['blobName']);
+        $list = $fileSystemObjectStoreDriver->list('kuchen');
+        $this->assertCount(0, $list);
     }
 }

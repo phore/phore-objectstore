@@ -64,6 +64,8 @@ class GoogleObjectStoreDriverTest extends TestCase
         $this->assertCount(17, $list);
         $list = $this->driver->list('f90ed-M-t');
         $this->assertCount(2, $list);
+        $list = $this->driver->list('kuchen');
+        $this->assertCount(0, $list);
     }
 
     public function testGetSetMetaData(): void
