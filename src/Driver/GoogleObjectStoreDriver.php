@@ -12,6 +12,7 @@ namespace Phore\ObjectStore\Driver;
 use DateTime;
 use Exception;
 use Google\Cloud\Core\Exception\GoogleException;
+use Google\Cloud\Core\Exception\NotFoundException;
 use Google\Cloud\Storage\Bucket;
 use Google\Cloud\Storage\StorageClient;
 use InvalidArgumentException;
@@ -111,6 +112,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $meta
      * @return StreamInterface
      * @throws Exception
+     * @throws \Phore\Core\Exception\NotFoundException
      */
     public function get(string $objectId, array &$meta = null): string
     {
@@ -123,6 +125,8 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
                     $meta = $info['metadata'];
                 }
                 return $data;
+            } catch (NotFoundException $e) {
+                throw new \Phore\Core\Exception\NotFoundException($e->getMessage(), $e->getCode(), $e);
             } catch (Exception $e) {
                 if ($i > 2) {
                     throw $e;
@@ -138,17 +142,22 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $objectId
      * @param array|null $meta
      * @return StreamInterface
+     * @throws \Phore\Core\Exception\NotFoundException
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
-        $object = $this->bucket->object($objectId);
-        $stream = $object->downloadAsStream();
+        try {
+            $object = $this->bucket->object($objectId);
+            $stream = $object->downloadAsStream();
 
-        $info = $object->info();
-        if (isset ($info['metadata'])) {
-            $meta = $info['metadata'];
+            $info = $object->info();
+            if (isset ($info['metadata'])) {
+                $meta = $info['metadata'];
+            }
+            return $stream;
+        } catch (NotFoundException $e) {
+            throw new \Phore\Core\Exception\NotFoundException($e->getMessage(), $e->getCode(), $e);
         }
-        return $stream;
     }
 
     /**
@@ -201,20 +210,30 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
 
     /**
      * @param string $objectId
+     * @throws \Phore\Core\Exception\NotFoundException
      */
     public function remove(string $objectId): void
     {
-        $this->bucket->object($objectId)->delete();
+        try {
+            $this->bucket->object($objectId)->delete();
+        } catch (NotFoundException $e) {
+            throw new \Phore\Core\Exception\NotFoundException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
      * @param string $objectId
      * @param string $newObjectId
+     * @throws \Phore\Core\Exception\NotFoundException
      */
     public function rename(string $objectId, string $newObjectId): void
     {
-        $object = $this->bucket->object($objectId);
-        $object->rename($newObjectId);
+        try {
+            $object = $this->bucket->object($objectId);
+            $object->rename($newObjectId);
+        } catch (NotFoundException $e) {
+            throw new \Phore\Core\Exception\NotFoundException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -263,9 +282,9 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * ```
      * @param string|null $prefix [optional]
      *     Configuration options.
-     *          @type string $prefix Result will contain only objects whose names, contains the prefix
+     * @type string $prefix Result will contain only objects whose names, contains the prefix
      *
-     *          @type null $prefix Result contains all objects in container
+     * @type null $prefix Result contains all objects in container
      *
      * @return array returns an empty array if no data is available
      */
