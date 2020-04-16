@@ -44,6 +44,7 @@ interface ObjectStoreDriver
      * @param string $objectId
      * @param array|null $meta
      * @return StreamInterface
+     * @throws NotFoundException
      */
     public function get(string $objectId, array &$meta = null): string;
 
@@ -51,6 +52,7 @@ interface ObjectStoreDriver
      * @param string $objectId
      * @param array|null $meta
      * @return StreamInterface
+     * @throws NotFoundException
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface;
 
