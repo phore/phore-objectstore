@@ -44,6 +44,12 @@ DOCKER_MOUNT_PARAMS="-v $PROGPATH/:/opt/"
 # User to run inside the container (Default: 'user')
 KICKSTART_USER="user"
 
+
+# For WINDOWS (WSL) users only: Change this for mapping from wsl to docker4win. Execute this in linux shell:
+# `echo "KICKSTART_WIN_PATH=C:/" >> ~/.kickstartconfig`
+KICKSTART_WIN_PATH=""
+
+
 ############################
 ### CODE BELOW           ###
 ############################
@@ -142,7 +148,7 @@ _KICKSTART_CURRENT_VERSION="1.2.0"
 ##
 # This variables can be overwritten by ~/.kickstartconfig
 #
-KICKSTART_WIN_PATH=""
+
 
 
 ask_user() {
@@ -251,12 +257,15 @@ _usage() {
         $0 :debug       Execute the container in debug-mode (don't execute kick-commands)
 
     ARGUMENTS
-        -h                             Show this help
-        -t <tagName> --tag=<tagname>   Run container with this tag (development)
-        -u --unflavored                Run the container whithout running any scripts (develpment)
-        --offline                      Do not pull images nor ask for version upgrades
-        --no-tty                       Disable interactive tty
-
+        -h                    Show this help
+        -t, --tag=<tagname>   Run container with this tag (development)
+        -u, --unflavored      Run the container whithout running any scripts (develpment)
+            --offline         Do not pull images nor ask for version upgrades
+            --no-tty          Disable interactive tty
+        -e, --env ENV=value   Set environment variables
+        -v, --volume  list    Bind mount a volume
+        -f, --force           Restart / kill running containers
+        -r, --reset           Shutdown all services and restart stack services
     "
     exit 1
 }
@@ -308,10 +317,16 @@ run_shell() {
         echo "[kickstart.sh] Container '$CONTAINER_NAME' already running"
 
         choice="s"
-        if [[ "$ARGUMENT" == "" ]]
+
+        if [ "$forceKillContainer" -eq "1" ]
         then
-            read -r -p "Your choice: (S)hell, (r)estart, (a)bort?" choice
-        fi
+            choice="r"
+        else
+            if [[ "$ARGUMENT" == "" ]]
+            then
+                read -r -p "Your choice: (S)hell, (r)estart, (a)bort?" choice
+            fi
+        fi;
 
         case "$choice" in
             a)
@@ -350,7 +365,11 @@ run_shell() {
    echo "[kickstart.s] Another container is already running!"
    docker ps
    echo ""
-   read -r -p "Your choice: (i)gnore/run anyway, (s)hell, (k)ill, (a)bort?:" choice
+   choice="k"
+   if [ "$forceKillContainer" -eq "0" ]
+   then
+      read -r -p "Your choice: (i)gnore/run anyway, (s)hell, (k)ill, (a)bort?:" choice
+   fi;
    case "$choice" in
       i|I)
         run_container
@@ -385,22 +404,25 @@ run_shell() {
 _ci_build() {
 
     echo "CI_BUILD: Building container.. (CI_* Env is preset by gitlab-ci-runner)";
+    [[ "$CI_REGISTRY" == "" ]] && echo "[Error deploy]: Environment CI_REGISTRY not set" && exit 1;
+    [[ "$CI_BUILD_NAME" == "" ]] && echo "CI_BUILD_NAME not set - setting default tag to 'latest'" && CI_BUILD_NAME="latest";
 
-    BUILD_TAG=":$CI_BUILD_NAME"
-    if [ "$CI_REGISTRY" == "" ]
-    then
-        echo "[Error deploy]: Environment CI_REGISTRY not set"
-        exit 1
-    fi
+    local imageName="$CI_REGISTRY_IMAGE:$CI_BUILD_NAME"
 
-    CMD="docker build --pull -t $CI_REGISTRY_IMAGE$BUILD_TAG -f ./Dockerfile ."
+    CMD="docker build --pull -t $imageName -f ./Dockerfile ."
     echo "[Building] Running '$CMD' (MODE1)";
     eval $CMD
 
-    echo "Logging in to: $CI_REGISTRY_USER @ $CI_REGISTRY"
-    echo "$CI_REGISTRY_PASSWORD" | docker login --username $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    docker push $CI_REGISTRY_IMAGE$BUILD_TAG
-    echo "Push successful..."
+    if [ "$CI_REGISTRY_PASSWORD" != "" ]
+    then
+        echo "Logging in to: $CI_REGISTRY_USER @ $CI_REGISTRY"
+        echo "$CI_REGISTRY_PASSWORD" | docker login --username $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    else
+        echo "No registry credentials provided in env CI_REGISTRY_PASSWORD - skipping docker login."
+    fi;
+
+    docker push $imageName
+    echo "Push successful (Image: $imageName)..."
     exit
 }
 
@@ -435,6 +457,7 @@ run_container() {
 		# For Windows users: Rewrite Path of bash to Windows path
 		# Will work only on drive C:/
 		PROGPATH="${PROGPATH/\/mnt\/c\//$KICKSTART_WIN_PATH}"
+		DOCKER_MOUNT_PARAMS="-v $PROGPATH/:/opt/"
 	fi
 
     docker rm $CONTAINER_NAME || true
@@ -445,11 +468,17 @@ run_container() {
     if [ -e "$_STACKFILE" ]; then
         _STACK_NETWORK_NAME=$CONTAINER_NAME
 
+        if [ $resetServices -eq 1 ]
+        then
+          echo "Reset Services. Leaving swarm..."
+          docker swarm leave --force
+        fi;
+
         echo "Startin in stack mode... (network: '$_STACK_NETWORK_NAME')"
         _NETWORKS=$(docker network ls | grep $_STACK_NETWORK_NAME | wc -l)
         echo nets: $_NETWORKS
         if [ $_NETWORKS -eq 0 ]; then
-            docker swarm init || true
+            docker swarm init --advertise-addr $KICKSTART_HOST_IP || true
             docker network create --attachable -d overlay $_STACK_NETWORK_NAME
         fi;
 
@@ -503,15 +532,30 @@ run_container() {
 
 
 
-
+forceKillContainer=0
 ARGUMENT="";
 # Parse the command parameters
 ARGUMENT="";
+resetServices=0;
 while [ "$#" -gt 0 ]; do
   case "$1" in
     -t) USE_PIPF_VERSION="-t $2"; shift 2;;
     --tag=*)
         USE_PIPF_VERSION="-t ${1#*=}"; shift 1;;
+
+    -e|--env) DOCKER_OPT_PARAMS="$DOCKER_OPT_PARAMS -e '$2'"; shift 2;;
+
+    -v|--volume) DOCKER_OPT_PARAMS="$DOCKER_OPT_PARAMS -v '$2'"; shift 2;;
+
+    -f|--force)
+        forceKillContainer=1;
+        shift 1;
+        ;;
+
+    -r|--reset)
+        resetServices=1;
+        shift 1;
+        ;;
 
     --offline)
         OFFLINE_MODE=1; shift 1;;
@@ -613,6 +657,12 @@ if [ -e "$HOME/.gitconfig" ]
 then
     echo "Mounting $HOME/.gitconfig..."
     DOCKER_OPT_PARAMS="$DOCKER_OPT_PARAMS -v $HOME/.gitconfig:/home/user/.gitconfig";
+fi
+
+if [ -e "$HOME/.git-credentials" ]
+then
+    echo "Mounting $HOME/.git-credentials..."
+    DOCKER_OPT_PARAMS="$DOCKER_OPT_PARAMS -v $HOME/.git-credentials:/home/user/.git-credentials";
 fi
 
 if [ -e "$HOME/.bash_history" ]
