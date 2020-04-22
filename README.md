@@ -1,5 +1,7 @@
 # ObjectStore - Wrapper for various cloud based buckets
 
+![tests](https://github.com/phore/phore-objectstore/workflows/tests/badge.svg)
+
 ## Install
 
 ```
