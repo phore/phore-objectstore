@@ -23,10 +23,7 @@
   "autoload": {
     "psr-4": {
       "Phore\\ObjectStore\\": "src/"
-    },
-    "files": [
-      "config.php"
-    ]
+    }
   },
   "minimum-stability": "dev",
   "require-dev": {
