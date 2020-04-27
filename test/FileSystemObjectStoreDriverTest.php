@@ -16,6 +16,12 @@ class FileSystemObjectStoreDriverTest extends TestCase
     public function testList(): void
     {
         $fileSystemObjectStoreDriver = new FileSystemObjectStoreDriver('/tmp');
+        if(!$fileSystemObjectStoreDriver->has('azureConfig.json')){
+            $fileSystemObjectStoreDriver->put('azureConfig.json', 'test');
+        }
+        if(!$fileSystemObjectStoreDriver->has('googleConfig.json')){
+            $fileSystemObjectStoreDriver->put('googleConfig.json', 'test');
+        }
         $list = $fileSystemObjectStoreDriver->list();
         $this->assertCount(3, $list);
         $list = $fileSystemObjectStoreDriver->list('goo');

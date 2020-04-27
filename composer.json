@@ -25,7 +25,7 @@
       "Phore\\ObjectStore\\": "src/"
     },
     "files": [
-
+      "config.php"
     ]
   },
   "minimum-stability": "dev",

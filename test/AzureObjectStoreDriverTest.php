@@ -24,7 +24,11 @@ class AzureObjectStoreDriverTest extends TestCase
 
     protected function setUp(): void
     {
-        $accountKey = phore_file('../run/secrets/azure')->get_contents();
+        if(is_file(AZURE_SERVICE_ACCOUNT)){
+            $accountKey = phore_file(AZURE_SERVICE_ACCOUNT)->get_contents();
+        } else {
+            $accountKey = AZURE_SERVICE_ACCOUNT;
+        }
         $this->driver = new AzureObjectStoreDriver($this->accountName, $accountKey, $this->containerName);
     }
 

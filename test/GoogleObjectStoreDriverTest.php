@@ -16,8 +16,7 @@ class GoogleObjectStoreDriverTest extends TestCase
 
     protected function setUp(): void
     {
-        $keyFilePath = '/run/secrets/google_test';
-        $this->driver = new GoogleObjectStoreDriver($keyFilePath, 'phore-test2');
+        $this->driver = new GoogleObjectStoreDriver(GOOGLE_SERVICE_ACCOUNT, 'phore-test2');
         $objectId = 'test/test.txt';
         if ($this->driver->has($objectId)) {
             $this->driver->remove('test/test.txt');
