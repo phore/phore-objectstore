@@ -10,5 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: UnitTests
+      env:
+        GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        AZURE_SERVICE_ACCOUNT: ${{ secrets.AZURE_SERVICE_ACCOUNT }}
       run: ./kickstart.sh :test
   
