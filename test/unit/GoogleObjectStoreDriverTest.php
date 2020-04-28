@@ -28,13 +28,13 @@ class GoogleObjectStoreDriverTest extends TestCase
         $this->assertFalse($this->driver->has('fail'));
     }
 
-    public function testValidKeyFileArray(): void
-    {
-        $keyFilePath = '/run/secrets/google_test';
-        $keyFile = phore_file($keyFilePath)->get_json();
-        $driver = new GoogleObjectStoreDriver($keyFile, 'phore-test2');
-        $this->assertFalse($driver->has('fail'));
-    }
+//    public function testValidKeyFileArray(): void
+//    {
+//        $keyFilePath = '/run/secrets/google_test';
+//        $keyFile = phore_file($keyFilePath)->get_json();
+//        $driver = new GoogleObjectStoreDriver($keyFile, 'phore-test2');
+//        $this->assertFalse($driver->has('fail'));
+//    }
 
     public function testInvalidKeyFilePath(): void
     {
