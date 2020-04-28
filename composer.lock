@@ -340,12 +340,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-http-client.git",
-                "reference": "48ea3c950950522b5343d7320f3d7555658fa51c"
+                "reference": "64874d9af473bfb579770c9506b88b18ed27c7bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/48ea3c950950522b5343d7320f3d7555658fa51c",
-                "reference": "48ea3c950950522b5343d7320f3d7555658fa51c",
+                "url": "https://api.github.com/repos/phore/phore-http-client/zipball/64874d9af473bfb579770c9506b88b18ed27c7bc",
+                "reference": "64874d9af473bfb579770c9506b88b18ed27c7bc",
                 "shasum": ""
             },
             "require": {
@@ -389,7 +389,7 @@
                 "Keyword1",
                 "Keyword2"
             ],
-            "time": "2019-12-05T14:05:48+00:00"
+            "time": "2020-04-27T20:08:54+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1361,12 +1361,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "50f391a233a4d59a752f6d1a20dfd041b6ca0e00"
+                "reference": "6be94d5733839a52492da96f57c6a3b062a8f97a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/50f391a233a4d59a752f6d1a20dfd041b6ca0e00",
-                "reference": "50f391a233a4d59a752f6d1a20dfd041b6ca0e00",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/6be94d5733839a52492da96f57c6a3b062a8f97a",
+                "reference": "6be94d5733839a52492da96f57c6a3b062a8f97a",
                 "shasum": ""
             },
             "require": {
@@ -1399,7 +1399,7 @@
                 }
             ],
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
-            "time": "2020-04-27T09:50:36+00:00"
+            "time": "2020-04-27T19:13:53+00:00"
         },
         {
             "name": "phpspec/prophecy",
