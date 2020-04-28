@@ -1,0 +1,18 @@
+<phpunit bootstrap="/opt/vendor/autoload.php">
+    <testsuites>
+        <testsuite name="tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <exclude>
+                <directory suffix=".php">src/Ctrl</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="/opt/report" lowUpperBound="35" highLowerBound="70"/>
+    </logging>
+</phpunit>
