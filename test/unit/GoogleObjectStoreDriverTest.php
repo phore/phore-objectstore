@@ -16,7 +16,7 @@ class GoogleObjectStoreDriverTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->driver = new GoogleObjectStoreDriver(GOOGLE_SERVICE_ACCOUNT, 'phore-test2');
+        $this->driver = new GoogleObjectStoreDriver(GOOGLE_KEYFILE_PATH, 'phore-test2');
         $objectId = 'test/test.txt';
         if ($this->driver->has($objectId)) {
             $this->driver->remove('test/test.txt');
@@ -30,7 +30,7 @@ class GoogleObjectStoreDriverTest extends TestCase
 
     public function testValidKeyFileArray(): void
     {
-        $keyFile = phore_file(GOOGLE_SERVICE_ACCOUNT)->get_json();
+        $keyFile = phore_file(GOOGLE_KEYFILE_PATH)->get_json();
         $driver = new GoogleObjectStoreDriver($keyFile, 'phore-test2');
         $this->assertFalse($driver->has('fail'));
     }
