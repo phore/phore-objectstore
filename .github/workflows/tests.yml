@@ -10,5 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: UnitTests
-      run: ./kickstart.sh -e 'GOOGLE_SERVICE_ACCOUNT=${{ secrets.GOOGLE_SERVICE_ACCOUNT }}' -e 'AZURE_SERVICE_ACCOUNT=${{ secrets.AZURE_SERVICE_ACCOUNT }}' :test
+      env:
+        KICKSECRET_google_test: ${{ secrets.SuperSecret }}
+        KICKSECRET_azure: ${{ secrets.AZURE_SERVICE_ACCOUNT }}
+      run: ./kickstart.sh :test
   
