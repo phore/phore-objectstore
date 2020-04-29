@@ -289,12 +289,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phore/phore-core.git",
-                "reference": "2a1f73db204064036f4fa7e13d22759e16065634"
+                "reference": "12c1b2dc714a6d1f4ea49356f0010b8d824e66c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phore/phore-core/zipball/2a1f73db204064036f4fa7e13d22759e16065634",
-                "reference": "2a1f73db204064036f4fa7e13d22759e16065634",
+                "url": "https://api.github.com/repos/phore/phore-core/zipball/12c1b2dc714a6d1f4ea49356f0010b8d824e66c4",
+                "reference": "12c1b2dc714a6d1f4ea49356f0010b8d824e66c4",
                 "shasum": ""
             },
             "require": {
@@ -332,7 +332,7 @@
             ],
             "description": "Phore core library",
             "homepage": "https://infracamp.org/project/phore",
-            "time": "2020-04-16T08:36:20+00:00"
+            "time": "2020-04-29T17:32:38+00:00"
         },
         {
             "name": "phore/http-client",

@@ -121,7 +121,7 @@ class ObjectStoreObject
      */
     public function putJson(array $data): self
     {
-        $this->driver->put($this->objectId, json_encode($data), $this->metaData);
+        $this->driver->put($this->objectId, phore_json_encode($data), $this->metaData);
         return $this;
     }
 
