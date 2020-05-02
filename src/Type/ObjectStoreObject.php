@@ -9,9 +9,9 @@
 namespace Phore\ObjectStore\Type;
 
 
+use Exception;
 use Phore\Core\Exception\NotFoundException;
 use Phore\ObjectStore\Driver\ObjectStoreDriver;
-
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -66,6 +66,7 @@ class ObjectStoreObject
 
     /**
      * @return string
+     * @throws NotFoundException
      */
     public function get(): string
     {
@@ -74,6 +75,7 @@ class ObjectStoreObject
 
     /**
      * @return StreamInterface
+     * @throws NotFoundException
      */
     public function getStream(): StreamInterface
     {
@@ -82,25 +84,29 @@ class ObjectStoreObject
 
     /**
      * @return array
+     * @throws NotFoundException
      */
     public function getJson(): array
     {
         $data = $this->get();
         $ret = json_decode($data, true);
-        if ($ret === null)
+        if ($ret === null) {
             throw new \InvalidArgumentException("Cannot json-decode data from object '$this->objectId'");
+        }
         return $ret;
     }
 
     /**
      * @return array
+     * @throws NotFoundException
      */
     public function getYaml(): array
     {
         $data = $this->get();
         $ret = yaml_parse($data);
-        if ($ret === false)
+        if ($ret === false) {
             throw new \InvalidArgumentException("Cannot yaml_parse data from object '$this->objectId'");
+        }
         return $ret;
     }
 
@@ -139,15 +145,17 @@ class ObjectStoreObject
      * @param null $key
      * @param null $default
      * @return array|null
-     * @throws \Exception
+     * @throws Exception
      */
-    public function getMeta($key = null, $default = null)
+    public function getMeta($key = null, $default = null): ?array
     {
-        if (!$this->metaData)
+        if (!$this->metaData) {
             $this->metaData = $this->driver->getMeta($this->objectId);
+        }
         $data = $this->metaData;
-        if ($key !== null)
+        if ($key !== null) {
             return phore_pluck($key, $data, $default);
+        }
         return $data;
     }
 
@@ -187,7 +195,7 @@ class ObjectStoreObject
     /**
      * @throws NotFoundException
      */
-    public function remove()
+    public function remove(): void
     {
         $this->driver->remove($this->objectId);
     }
@@ -200,7 +208,7 @@ class ObjectStoreObject
      *
      * @param string $data
      */
-    public function append(string $data)
+    public function append(string $data): void
     {
         $this->driver->append($this->objectId, $data);
     }
