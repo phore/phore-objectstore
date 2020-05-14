@@ -144,10 +144,10 @@ class ObjectStoreObject
     /**
      * @param null $key
      * @param null $default
-     * @return array|null
+     * @return array|mixed|null
      * @throws Exception
      */
-    public function getMeta($key = null, $default = null): ?array
+    public function getMeta($key = null, $default = null)
     {
         if (!$this->metaData) {
             $this->metaData = $this->driver->getMeta($this->objectId);
