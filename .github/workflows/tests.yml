@@ -13,5 +13,7 @@ jobs:
       env:
         KICKSECRET_google_test: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         KICKSECRET_azure: ${{ secrets.AZURE_SERVICE_ACCOUNT }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: ./kickstart.sh :test
   
