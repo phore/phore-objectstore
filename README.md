@@ -38,6 +38,7 @@ Available Drivers:
 | Google Bucket Native Driver (Requires `google/cloud-storage`)                 | `GoogleCloudStoreDriver`          | `gcsnd://<bucket-name>?keyfile=/run/secrets/google-key-1` |
 | Azure Block Storage                                                           | `--`          | `azbs://<bucket-name>?account=<account>&keyfile=/run/secrets/az-key-1` |
 | Azure Block Storage Native Driver (Requires `microsoft/azure-storage-blob`)   | `AzureObjectStoreDriver`          | `azbsnd://<bucket-name>?account=<account>&keyfile=/run/secrets/az-key-1` |
+| AWS S3 Block Storage Native Driver (Requires `aws/aws-sdk-php`)               | `S3ObjectStoreDriver`             | `s3nd://<bucket-name>?account=<accountId>&keyfile=/run/secrets/keyfile&region=<region>` |
 | Filesystem driver                                                             | `FileSystemObjectStoreDriver`     | `file://path/` |
      
 

@@ -19,9 +19,16 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
 
     private $bucket;
 
-    public function __construct(array $credentials, string $bucket)
+    public function __construct(string $account, string $region, string $bucket, string $secretkey)
     {
-        $this->client = new S3Client($credentials);
+        $this->client = new S3Client([
+            "version" => "latest",
+            "region" => $region,
+            "credentials" => [
+                "key" => $account,
+                "secret" => $secretkey
+            ]
+        ]);
         $this->bucket = $bucket;
     }
 

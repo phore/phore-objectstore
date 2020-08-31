@@ -20,6 +20,7 @@ use Phore\ObjectStore\Driver\FileSystemObjectStoreDriver;
 use Phore\ObjectStore\Driver\GoogleObjectStoreDriver;
 use Phore\ObjectStore\Driver\ObjectStoreDriver;
 use Phore\ObjectStore\Driver\PhoreGoogleObjectStoreDriver;
+use Phore\ObjectStore\Driver\S3ObjectStoreDriver;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 
 
@@ -101,6 +102,12 @@ class ObjectStore
                 return new ObjectStore(new AzureObjectStoreDriver($account, $key, $bucketName));
             case 'file':
                 return new ObjectStore(new FileSystemObjectStoreDriver('/' . $bucketName));
+            case 's3nd':
+                $account = $uriParts->getQueryVal("account", new InvalidArgumentException("Missing 'account' query parameter"));
+                $region = $uriParts->getQueryVal("region", new InvalidArgumentException("Missing 'region' query parameter"));
+                $keyFilePath = $uriParts->getQueryVal("keyfile", new InvalidArgumentException("Missing 'keyfile' query parameter"));
+                $key = phore_file($keyFilePath)->get_contents();
+                return new ObjectStore(new S3ObjectStoreDriver($account, $region, $bucketName, $key));
         }
         throw new InvalidArgumentException("Invalid scheme for '$uri'");
     }

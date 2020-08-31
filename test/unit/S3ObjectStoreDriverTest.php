@@ -14,12 +14,7 @@ class S3ObjectStoreDriverTest extends TestCase
     private function getDriver() : S3ObjectStoreDriver
     {
         return new S3ObjectStoreDriver([
-            "version" => "latest",
-            "region" => "eu-central-1",
-            "credentials" => [
-                "key" => AWS_ACCESS_KEY_ID,
-                "secret" => AWS_SECRET_ACCESS_KEY
-            ]
+
         ], "raw-data-dev-talpa-cloud");
     }
 
