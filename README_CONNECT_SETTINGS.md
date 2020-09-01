@@ -22,10 +22,12 @@ Available Drivers:
 ### AWS S3 Driver (Native Driver)
 
 Available options:
-- ***`account` (required)***: The IAM Account Key
-- ***`region` (required)***: The region (e.g. `eu-central-1`)
+- ***`region` (require)***: The region (e.g. `eu-central-1`)
+- ***`account` (optional)***: The IAM Account Key
 - ***`keyfile` (optional)***: The secret key to load from a file (secrets storage)
 - ***`secretkey` (optional)***: Specify the secret key directly (take care not to expose the uri!)
+
+If `acccount` is omitted, the defaultProvider is used for IAM access.
 
 ```
 s3nd://<bucket-name>?account=<accountId>&keyfile=/run/secrets/keyfile&region=<region>

@@ -4,6 +4,7 @@
 namespace Phore\ObjectStore\Driver;
 
 
+use Aws\Credentials\CredentialProvider;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use Phore\Core\Exception\NotFoundException;
@@ -19,19 +20,27 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
 
     private $bucket;
 
-    public function __construct(string $account, string $region, string $bucket, string $secretkey)
+    public function __construct(string $region, string $bucket, string $account=null, string $secretkey=null)
     {
         if ( ! class_exists(S3Client::class))
             throw new \InvalidArgumentException("Package 'aws/aws-sdk-php' is required to use s3nd");
 
-        $this->client = new S3Client([
+        $config = [
             "version" => "latest",
-            "region" => $region,
-            "credentials" => [
+            "region" => $region
+        ];
+        if ($account !== null) {
+            // Use credentials from uri
+            $config["credentials"] = [
                 "key" => $account,
                 "secret" => $secretkey
-            ]
-        ]);
+            ];
+        } else {
+            // Use default provider
+            $config["credentials"] = CredentialProvider::defaultProvider();
+        }
+
+        $this->client = new S3Client($config);
         $this->bucket = $bucket;
     }
 
