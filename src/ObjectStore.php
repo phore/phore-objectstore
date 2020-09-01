@@ -11,6 +11,7 @@ namespace Phore\ObjectStore;
 
 use Exception;
 use InvalidArgumentException;
+use Phore\Core\Helper\PhoreUrl;
 use Phore\FileSystem\Exception\FileAccessException;
 use Phore\FileSystem\Exception\FileNotFoundException;
 use Phore\FileSystem\Exception\FileParsingException;
@@ -74,6 +75,15 @@ class ObjectStore
         throw new InvalidArgumentException("Invalid scheme for '$provider'");
     }
 
+
+    protected static function _GetKey(PhoreUrl $uriParts) : string
+    {
+        $key = $uriParts->getQueryVal("secretkey", "");
+        if ($uriParts->hasQueryVal("keyfile"))
+            $key = phore_file($uriParts->getQueryVal("keyfile"))->get_contents();
+        return $key;
+    }
+
     /**
      * @param string $uri
      * @return ObjectStore
@@ -92,21 +102,23 @@ class ObjectStore
             case 'gcsnd':
                 $keyFilePath = $uriParts->getQueryVal('keyfile', new InvalidArgumentException('Missing keyfile in objectstore URI.'));
                 return new ObjectStore(new GoogleObjectStoreDriver($keyFilePath, $bucketName));
+
             case 'gcs':
                 $keyFilePath = $uriParts->getQueryVal('keyfile', new InvalidArgumentException('Missing keyfile in objectstore URI.'));
                 return new ObjectStore(new PhoreGoogleObjectStoreDriver($keyFilePath, $bucketName));
+
             case 'azbsnd':
                 $account = $uriParts->getQueryVal('account', new InvalidArgumentException('Missing account in objectstore URI.'));
-                $keyFilePath = $uriParts->getQueryVal('keyfile', new InvalidArgumentException('Missing key in objectstore URI.'));
-                $key = phore_file($keyFilePath)->get_contents();
+                $key = self::_GetKey($uriParts);
                 return new ObjectStore(new AzureObjectStoreDriver($account, $key, $bucketName));
+
             case 'file':
                 return new ObjectStore(new FileSystemObjectStoreDriver('/' . $bucketName));
+
             case 's3nd':
                 $account = $uriParts->getQueryVal("account", new InvalidArgumentException("Missing 'account' query parameter"));
                 $region = $uriParts->getQueryVal("region", new InvalidArgumentException("Missing 'region' query parameter"));
-                $keyFilePath = $uriParts->getQueryVal("keyfile", new InvalidArgumentException("Missing 'keyfile' query parameter"));
-                $key = phore_file($keyFilePath)->get_contents();
+                $key = self::_GetKey($uriParts);
                 return new ObjectStore(new S3ObjectStoreDriver($account, $region, $bucketName, $key));
         }
         throw new InvalidArgumentException("Invalid scheme for '$uri'");

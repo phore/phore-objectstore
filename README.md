@@ -30,7 +30,7 @@ The object store can be created with
 $objectStore = ObjectStore::Connect('gcs://some-bucket?keyfile=/run/secrets/xyz');
 ```
 
-Available Drivers:
+Available Drivers: [Configuration options](README_CONNECT_SETTINGS.md)
 
 | driver | driver class | example |
 |--------|-------------|---------|
@@ -40,9 +40,9 @@ Available Drivers:
 | Azure Block Storage Native Driver (Requires `microsoft/azure-storage-blob`)   | `AzureObjectStoreDriver`          | `azbsnd://<bucket-name>?account=<account>&keyfile=/run/secrets/az-key-1` |
 | AWS S3 Block Storage Native Driver (Requires `aws/aws-sdk-php`)               | `S3ObjectStoreDriver`             | `s3nd://<bucket-name>?account=<accountId>&keyfile=/run/secrets/keyfile&region=<region>` |
 | Filesystem driver                                                             | `FileSystemObjectStoreDriver`     | `file://path/` |
-     
-
-
+   
+   
+See the [Configuration options page](README_CONNECT_SETTINGS.md) for full driver documentation
 
 ## Develop
 

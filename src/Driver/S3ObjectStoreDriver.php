@@ -21,6 +21,9 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
 
     public function __construct(string $account, string $region, string $bucket, string $secretkey)
     {
+        if ( ! class_exists(S3Client::class))
+            throw new \InvalidArgumentException("Package 'aws/aws-sdk-php' is required to use s3nd");
+
         $this->client = new S3Client([
             "version" => "latest",
             "region" => $region,
@@ -35,7 +38,12 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
 
     public function has(string $objectId): bool
     {
-        return $this->client->getObject();
+        try {
+            $this->get($objectId);
+            return true;
+        } catch (NotFoundException $e) {
+            return false;
+        }
     }
 
     public function put(string $objectId, $content, array $metadata = null)
@@ -85,12 +93,24 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
 
     public function rename(string $objectId, string $newObjectId)
     {
+        $this->client->copyObject([
+            "Bucket" => $this->bucket,
+            "Key" => $newObjectId,
+            "CopySource" => $objectId
+        ]);
+        $this->remove($objectId);
 
     }
 
     public function append(string $objectId, string $data)
     {
-        // TODO: Implement append() method.
+        try {
+            $content = $this->get($objectId);
+        } catch (NotFoundException $e) {
+            $content = "";
+        }
+        $content .= $data;
+        $this->put($objectId, $content);
     }
 
     public function getMeta(string $objectId): array
@@ -105,11 +125,23 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
 
     public function walk(callable $walkFunction): bool
     {
+        throw new \InvalidArgumentException("Umimplemented walk() method in S3 implementation");
         // TODO: Implement walk() method.
     }
 
     public function list(string $prefix = null): array
     {
-        // TODO: Implement list() method.
+        $opts = ["Bucket" => $this->bucket];
+        if ($prefix !== null)
+            $opts["Prefix"] = $prefix;
+
+        $results = $this->client->getPaginator("ListObjects", $opts);
+        $res = [];
+        foreach ($results as $result) {
+            foreach ($result["Contents"] as $obj) {
+                $res[] = $obj["Key"];
+            }
+        }
+        return $res;
     }
 }
