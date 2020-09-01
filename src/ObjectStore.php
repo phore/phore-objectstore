@@ -116,10 +116,10 @@ class ObjectStore
                 return new ObjectStore(new FileSystemObjectStoreDriver('/' . $bucketName));
 
             case 's3nd':
-                $account = $uriParts->getQueryVal("account", new InvalidArgumentException("Missing 'account' query parameter"));
+                $account = $uriParts->getQueryVal("account", null);
                 $region = $uriParts->getQueryVal("region", new InvalidArgumentException("Missing 'region' query parameter"));
                 $key = self::_GetKey($uriParts);
-                return new ObjectStore(new S3ObjectStoreDriver($account, $region, $bucketName, $key));
+                return new ObjectStore(new S3ObjectStoreDriver($region, $bucketName, $account, $key));
         }
         throw new InvalidArgumentException("Invalid scheme for '$uri'");
     }

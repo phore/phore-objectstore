@@ -17,9 +17,9 @@ class S3ObjectStoreDriverTest extends TestCase
     private function getDriver() : S3ObjectStoreDriver
     {
         return new S3ObjectStoreDriver(
-            "AKIAUSDYXI6G64ORE65T",
             "eu-central-1",
             "raw-data-dev-talpa-cloud",
+            "AKIAUSDYXI6G64ORE65T",
             phore_file(AWS_KEYFILE_PATH)->get_contents()
         );
     }
