@@ -58,7 +58,7 @@ class GoogleObjectStoreDriverTest extends TestCase
         $list = $this->driver->list();
         $this->assertArrayHasKey('blobName', $list[0]);
         $this->assertArrayHasKey('blobUrl', $list[0]);
-        $this->assertCount(17, $list);
+        $this->assertCount(36, $list);
         $list = $this->driver->list('f90ed-M-t');
         $this->assertCount(2, $list);
         $list = $this->driver->list('kuchen');
