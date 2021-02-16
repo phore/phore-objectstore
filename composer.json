@@ -13,12 +13,12 @@
     "ext-json": "*",
     "ext-yaml": "*",
     "phore/http-client": "*",
-    "ext-openssl": "*",
-    "microsoft/azure-storage-blob": "*"
+    "ext-openssl": "*"
   },
   "suggest": {
     "google/cloud-storage": "If using Google Cloud services",
-    "phore/filesystem": "If using filesystem driver"
+    "phore/filesystem": "If using filesystem driver",
+    "microsoft/azure-storage-blob": "Access Azure"
   },
   "autoload": {
     "psr-4": {
@@ -30,6 +30,7 @@
     "phpunit/phpunit": "8.5.x-dev",
     "google/cloud-storage": "*",
     "phore/filesystem": "*",
-    "aws/aws-sdk-php": "^3.151"
+    "aws/aws-sdk-php": "^3.151",
+    "microsoft/azure-storage-blob": "*"
   }
 }
