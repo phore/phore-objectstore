@@ -9,7 +9,7 @@ use Phore\ObjectStore\Driver\S3ObjectStoreDriver;
 use Phore\ObjectStore\ObjectStore;
 use PHPUnit\Framework\TestCase;
 
-class S3ObjectStoreDriverTest extends TestCase
+class S3ObjectStoreDriverTestDisabled extends TestCase
 {
 
 
