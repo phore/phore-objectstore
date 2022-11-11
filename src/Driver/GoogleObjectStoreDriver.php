@@ -33,13 +33,19 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
     private $bucket;
 
 
+    private $putOpts = [];
+    
     /**
      * GoogleObjectStoreDriver constructor.
+     * 
+     * To Put Public files set $putOpts to ["predefinedAcl"=>"publicRead"]
+     * 
      * @param string|array $keyFile
      * @param string $bucketName
      */
-    public function __construct($keyFile, string $bucketName)
+    public function __construct($keyFile, string $bucketName, array $putOpts = ["predefinedAcl"=>"projectprivate"])
     {
+        $this->putOpts = $putOpts;
         if (!class_exists(StorageClient::class)) {
             throw new InvalidArgumentException("Package google/cloud-storage is missing. Install it by running 'composer install google/cloud-storage'");
         }
@@ -71,10 +77,9 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      */
     private function _getPutOpts($objectId, array $metadata = null): array
     {
-        $opts = [
-            'name' => $objectId,
-            'predefinedAcl' => 'projectprivate'
-        ];
+        $opts = $this->putOpts;
+        $opts["name"] = $objectId;
+           
         if ($metadata !== null) {
             $opts['metadata'] = [
                 'metadata' => $metadata
