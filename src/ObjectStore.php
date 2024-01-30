@@ -36,7 +36,7 @@ class ObjectStore
      * @var ObjectStoreDriver
      */
     private $driver;
-
+    
 
     /**
      * ObjectStore constructor.
@@ -45,6 +45,7 @@ class ObjectStore
     public function __construct(ObjectStoreDriver $objectStoreDriver)
     {
         $this->driver = $objectStoreDriver;
+ 
     }
 
     /**
@@ -131,6 +132,7 @@ class ObjectStore
     {
         return $this->driver;
     }
+    
 
     /**
      * @param string $objectId

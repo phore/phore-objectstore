@@ -10,6 +10,7 @@ use Phore\FileSystem\Exception\FileNotFoundException;
 use Phore\FileSystem\Exception\FileParsingException;
 use Phore\FileSystem\PhoreFile;
 use Phore\HttpClient\Ex\PhoreHttpRequestException;
+use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
 use Psr\Http\Message\StreamInterface;
 
 
@@ -52,6 +53,11 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     public $retry;
 
     /**
+     * @var ObjectStoreEncryption
+     */
+    public $encryption;
+    
+    /**
      * PhoreGoogleObjectStoreDriver constructor.
      * @param string $configFilePath
      * @param string $bucketName
@@ -60,14 +66,18 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @throws FileParsingException
      * @throws PhoreHttpRequestException
      */
-    public function __construct(string $configFilePath, string $bucketName, bool $retry = false)
+    public function __construct(string $configFilePath, string $bucketName, bool $retry = false, ObjectStoreEncryption $encryption = null)
     {
         $this->config = phore_file($configFilePath)->get_json();
         $this->bucketName = $bucketName;
         $this->base_url .= '/b/' . $bucketName;
         $this->retry = $retry;
-
+        
         $this->accessToken = $this->_getJwt()['access_token'];
+        
+        $this->encryption = $encryption;
+        if ($this->encryption === null)
+            $this->encryption = new PassThruNoEncryption();
     }
 
     public function setRetries(int $retries)
@@ -179,7 +189,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
                 try {
                     phore_http_request(self::UPLOAD_URI . '?uploadType=media&name={object}', ['bucket' => $this->bucketName, 'object' => $objectId])
                         ->withBearerAuth($this->accessToken)
-                        ->withPostBody($content)->withHeaders(['Content-Type' => $this->_getContentType($objectId)])->send();
+                        ->withPostBody($this->encryption->encrypt($content))->withHeaders(['Content-Type' => $this->_getContentType($objectId)])->send();
                     return true;
                 } catch (PhoreHttpRequestException $ex) {
                     if ($this->retry) {
@@ -197,7 +207,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         }
         $meta = phore_json_encode($meta);
         $delimiter = 'delimiter';
-        $body = "--$delimiter\nContent-Type: application/json; charset=UTF-8\n\n$meta\n\n--$delimiter\nContent-Type: {$this->_getContentType($objectId)}\n\n$content\n--$delimiter--";
+        $body = "--$delimiter\nContent-Type: application/json; charset=UTF-8\n\n$meta\n\n--$delimiter\nContent-Type: {$this->_getContentType($objectId)}\n\n{$this->encryption->encrypt($content)}\n--$delimiter--";
 
         do {
             try {
@@ -237,8 +247,8 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $i = 0;
         do {
             try {
-                return phore_http_request(self::DOWNLOAD_URI . '?alt=media', ['bucket' => $this->bucketName, 'object' => $objectId])
-                    ->withBearerAuth($this->accessToken)->send()->getBody();
+                return $this->encryption->decrypt(phore_http_request(self::DOWNLOAD_URI . '?alt=media', ['bucket' => $this->bucketName, 'object' => $objectId])
+                    ->withBearerAuth($this->accessToken)->send()->getBody());
             } catch (PhoreHttpRequestException $ex) {
                 if ($this->retry) {
                     $i++;
@@ -332,6 +342,9 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function append(string $objectId, string $data)
     {
+        if ( ! $this->encryption->supportsAppending())
+            throw new InvalidArgumentException("Streaming is unsupported on this enryption method.");
+        
         $meta = $this->getMeta($objectId);
         if ($meta === []) {
             $this->put($objectId, $data);

@@ -83,15 +83,20 @@ class ObjectStoreObject
     }
 
     /**
-     * @return array
+     * @template T
+     * @param class-string<T> $cast
+     * @return array|T
      * @throws NotFoundException
      */
-    public function getJson(): array
+    public function getJson(string $cast = null): array|object
     {
         $data = $this->get();
         $ret = json_decode($data, true);
         if ($ret === null) {
             throw new \InvalidArgumentException("Cannot json-decode data from object '$this->objectId'");
+        }
+        if ($cast !== null) {
+            $ret = phore_hydrate($ret, $cast);
         }
         return $ret;
     }

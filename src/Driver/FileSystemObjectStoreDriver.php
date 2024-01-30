@@ -18,6 +18,8 @@ use Phore\FileSystem\Exception\FilesystemException;
 use Phore\FileSystem\Exception\PathOutOfBoundsException;
 use Phore\FileSystem\PhoreDirectory;
 use Phore\FileSystem\PhoreFile;
+use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
+use Phore\ObjectStore\Encryption\PassThruNoEncryption;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 use Psr\Http\Message\StreamInterface;
 
@@ -29,7 +31,12 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     private $rootDir;
 
-    public function __construct(string $rootDir)
+    /**
+     * @var ObjectStoreEncryption
+     */
+    private $encryption;
+    
+    public function __construct(string $rootDir, ObjectStoreEncryption $encryption = null)
     {
         if (!class_exists('\Phore\FileSystem\PhoreDirectory')) {
             throw new InvalidArgumentException('PhoreFilesystem is currently not installed. Install phore/filesystem to use FileSystemObjectStoreDriver');
@@ -39,6 +46,9 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
             throw new InvalidArgumentException("Root directory '$rootDir' not accessible");
         }
         $this->rootDir = phore_dir($rootDirAbs);
+        $this->encryption = $encryption;
+        if ($this->encryption === null)
+            $this->encryption = new PassThruNoEncryption();
     }
 
 
@@ -70,7 +80,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         if (!$dir->isDirectory()) {
             $dir->mkdir();
         }
-        $file->set_contents($content);
+        $file->set_contents($this->encryption->encrypt($content));
         if ($metadata !== null) {
             $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile()->set_json($metadata);
         }
@@ -109,7 +119,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         if (!$file->isFile()) {
             throw new NotFoundException("Object '$objectId' not existing.", 0);
         }
-        return $file->get_contents();
+        return $this->encryption->decrypt($file->get_contents());
     }
 
     /**
@@ -120,6 +130,9 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
+        if ( ! $this->encryption->supportsStreaming())
+            throw new InvalidArgumentException("Encryption does not support streaming.");
+        
         return $this->rootDir->withSubPath($objectId)->asFile()->fopen('r');
     }
 
@@ -176,11 +189,15 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     {
         $targetFile = $this->rootDir->withSubPath($objectId)->asFile();
 
+        $data = "";
         if ($targetFile->exists()) {
-            $targetFile->append_content($appendData);
-        } else {
-            $targetFile->set_contents($appendData);
+            $data = $this->encryption->decrypt($targetFile->get_contents());
         }
+        
+        $data .= $appendData;
+        
+        $targetFile->set_contents($this->encryption->encrypt($appendData));
+        
         return true;
     }
 

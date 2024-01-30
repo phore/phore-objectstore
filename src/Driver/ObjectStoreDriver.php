@@ -31,7 +31,7 @@ interface ObjectStoreDriver
      * @return mixed
      */
     public function put(string $objectId, $content, array $metadata = null);
-
+    
     /**
      * @param string $objectId
      * @param $resource
