@@ -15,6 +15,7 @@ use MicrosoftAzure\Storage\Blob\Models\CreateBlockBlobOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 use Phore\Core\Exception\NotFoundException;
+use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
 use Psr\Http\Message\StreamInterface;
 
 class AzureObjectStoreDriver implements ObjectStoreDriver
@@ -39,6 +40,10 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
         $connectionString = "DefaultEndpointsProtocol=https;AccountName=$accountName;AccountKey=$accountKey";
         $this->blobClient = BlobRestProxy::createBlobService($connectionString);
         $this->containerName = $containerName;
+    }
+    public function setEncryption(ObjectStoreEncryption $encryption)
+    {
+        throw new \InvalidArgumentException("Encryption not supported in Azure implementation");
     }
 
     /**

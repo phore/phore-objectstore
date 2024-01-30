@@ -8,6 +8,7 @@ use Aws\Credentials\CredentialProvider;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use Phore\Core\Exception\NotFoundException;
+use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
 use Psr\Http\Message\StreamInterface;
 
 class S3ObjectStoreDriver implements ObjectStoreDriver
@@ -44,7 +45,10 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
         $this->bucket = $bucket;
     }
 
-
+    public function setEncryption(ObjectStoreEncryption $encryption)
+    {
+        throw new \InvalidArgumentException("Encryption not supported in S3 implementation");
+    }
     public function has(string $objectId): bool
     {
         try {

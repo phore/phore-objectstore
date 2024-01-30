@@ -36,16 +36,21 @@ class ObjectStore
      * @var ObjectStoreDriver
      */
     private $driver;
-    
+
 
     /**
      * ObjectStore constructor.
+     *
+     * Provide a objectStoreDriver as paramter 1 or a string with the connection string (see ObjectStoreDriverFactory)
+     *
      * @param ObjectStoreDriver $objectStoreDriver
      */
-    public function __construct(ObjectStoreDriver $objectStoreDriver)
+    public function __construct(ObjectStoreDriver|string $objectStoreDriver)
     {
+        if (is_string($objectStoreDriver))
+            $objectStoreDriver = ObjectStoreDriverFactory::Build($objectStoreDriver);
         $this->driver = $objectStoreDriver;
- 
+
     }
 
     /**
@@ -132,7 +137,7 @@ class ObjectStore
     {
         return $this->driver;
     }
-    
+
 
     /**
      * @param string $objectId

@@ -11,6 +11,11 @@ composer requre phore/objectstore
 ## Basic usage
 
 ```php
+$store = new ObjectStore(\Phore\ObjectStore\ObjectStoreDriverFactory::Build("gcs://<bucket-name>?keyfile=/run/secrets/google-key-1"));
+```
+
+
+```php
 $store = new ObjectStore(new GoogleCloudStoreDriver(__DIR__ . "/file/to/identity.json", "bucketName"));
 
 $store->object("object/some.json")->put("Some Data");

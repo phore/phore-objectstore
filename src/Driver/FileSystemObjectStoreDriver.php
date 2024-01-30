@@ -35,7 +35,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * @var ObjectStoreEncryption
      */
     private $encryption;
-    
+
     public function __construct(string $rootDir, ObjectStoreEncryption $encryption = null)
     {
         if (!class_exists('\Phore\FileSystem\PhoreDirectory')) {
@@ -122,6 +122,11 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         return $this->encryption->decrypt($file->get_contents());
     }
 
+    public function setEncryption(ObjectStoreEncryption $encryption)
+    {
+        $this->encryption = $encryption;
+    }
+
     /**
      * @param string $objectId
      * @param array|null $meta
@@ -132,7 +137,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
     {
         if ( ! $this->encryption->supportsStreaming())
             throw new InvalidArgumentException("Encryption does not support streaming.");
-        
+
         return $this->rootDir->withSubPath($objectId)->asFile()->fopen('r');
     }
 
@@ -193,11 +198,11 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
         if ($targetFile->exists()) {
             $data = $this->encryption->decrypt($targetFile->get_contents());
         }
-        
+
         $data .= $appendData;
-        
+
         $targetFile->set_contents($this->encryption->encrypt($appendData));
-        
+
         return true;
     }
 

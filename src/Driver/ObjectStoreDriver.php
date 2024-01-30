@@ -10,6 +10,7 @@ namespace Phore\ObjectStore\Driver;
 
 
 use Phore\Core\Exception\NotFoundException;
+use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -31,7 +32,7 @@ interface ObjectStoreDriver
      * @return mixed
      */
     public function put(string $objectId, $content, array $metadata = null);
-    
+
     /**
      * @param string $objectId
      * @param $resource
@@ -138,5 +139,7 @@ interface ObjectStoreDriver
      * @return array returns an empty array if no data is available
      */
     public function list(string $prefix = null): array;
+
+    public function setEncryption(ObjectStoreEncryption $encryption);
 
 }

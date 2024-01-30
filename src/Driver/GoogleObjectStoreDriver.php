@@ -16,6 +16,7 @@ use Google\Cloud\Core\Exception\NotFoundException;
 use Google\Cloud\Storage\Bucket;
 use Google\Cloud\Storage\StorageClient;
 use InvalidArgumentException;
+use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 use Psr\Http\Message\StreamInterface;
 
@@ -34,12 +35,12 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
 
 
     private $putOpts = [];
-    
+
     /**
      * GoogleObjectStoreDriver constructor.
-     * 
+     *
      * To Put Public files set $putOpts to ["predefinedAcl"=>"publicRead"]
-     * 
+     *
      * @param string|array $keyFile
      * @param string $bucketName
      */
@@ -60,7 +61,10 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
         $this->bucket = $storage->bucket($bucketName);
     }
 
-
+    public function setEncryption(ObjectStoreEncryption $encryption)
+    {
+        throw new InvalidArgumentException("Encryption not supported in Google implementation");
+    }
     /**
      * @param string $objectId
      * @return bool
@@ -79,7 +83,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
     {
         $opts = $this->putOpts;
         $opts["name"] = $objectId;
-           
+
         if ($metadata !== null) {
             $opts['metadata'] = [
                 'metadata' => $metadata

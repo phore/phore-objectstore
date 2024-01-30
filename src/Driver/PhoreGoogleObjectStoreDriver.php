@@ -11,6 +11,7 @@ use Phore\FileSystem\Exception\FileParsingException;
 use Phore\FileSystem\PhoreFile;
 use Phore\HttpClient\Ex\PhoreHttpRequestException;
 use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
+use Phore\ObjectStore\Encryption\PassThruNoEncryption;
 use Psr\Http\Message\StreamInterface;
 
 
@@ -56,7 +57,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @var ObjectStoreEncryption
      */
     public $encryption;
-    
+
     /**
      * PhoreGoogleObjectStoreDriver constructor.
      * @param string $configFilePath
@@ -72,9 +73,9 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $this->bucketName = $bucketName;
         $this->base_url .= '/b/' . $bucketName;
         $this->retry = $retry;
-        
+
         $this->accessToken = $this->_getJwt()['access_token'];
-        
+
         $this->encryption = $encryption;
         if ($this->encryption === null)
             $this->encryption = new PassThruNoEncryption();
@@ -174,6 +175,10 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         }
     }
 
+    public function setEncryption(ObjectStoreEncryption $encryption)
+    {
+        $this->encryption = $encryption;
+    }
     /**
      * @param string $objectId
      * @param $content
@@ -344,7 +349,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     {
         if ( ! $this->encryption->supportsAppending())
             throw new InvalidArgumentException("Streaming is unsupported on this enryption method.");
-        
+
         $meta = $this->getMeta($objectId);
         if ($meta === []) {
             $this->put($objectId, $data);
