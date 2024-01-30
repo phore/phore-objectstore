@@ -8,11 +8,11 @@ class SodiumSyncEncryption implements ObjectStoreEncryption
 
     public function __construct(string $key)
     {
-        if (strlen($key) < SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
-            throw new \InvalidArgumentException("Key must be at least " . SODIUM_CRYPTO_SECRETBOX_KEYBYTES . " bytes long");
+        if (strlen($key) < 10) {
+            throw new \InvalidArgumentException("Key must be at least 10 bytes long");
         }
 
-        $this->key = substr($key, 0, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
+        $this->key = substr(sha1($key), 0, SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
     }
 
     public function encrypt(string $data): string
