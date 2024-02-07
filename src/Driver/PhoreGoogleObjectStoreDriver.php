@@ -43,6 +43,8 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public $accessToken;
 
+    private int $accessTokenExpires = 0;
+    
     /**
      * @var integer
      */
@@ -74,13 +76,22 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         $this->base_url .= '/b/' . $bucketName;
         $this->retry = $retry;
 
-        $this->accessToken = $this->_getJwt()['access_token'];
+        $this->_regenertateAccessToken();
 
         $this->encryption = $encryption;
         if ($this->encryption === null)
             $this->encryption = new PassThruNoEncryption();
     }
 
+    
+    protected function _regenertateAccessToken () {
+        if (time() < $this->accessTokenExpires)
+            return;
+        $this->accessToken = $this->_getJwt()['access_token'];
+        $this->accessTokenExpires = time() + 300;
+    }
+    
+    
     public function setRetries(int $retries)
     {
         $this->retries = $retries;
@@ -131,6 +142,8 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function has(string $objectId): bool
     {
+        $this->_regenertateAccessToken();
+        
         $i = 0;
         do {
             try {
@@ -187,6 +200,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function put(string $objectId, $content, array $metadata = null)
     {
+        $this->_regenertateAccessToken();
         $i = 0;
 
         if ($metadata === null) {
@@ -249,6 +263,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function get(string $objectId, array &$meta = null): string
     {
+        $this->_regenertateAccessToken();
         $i = 0;
         do {
             try {
@@ -287,6 +302,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function remove(string $objectId)
     {
+        $this->_regenertateAccessToken();
         $i = 0;
         do {
             try {
@@ -314,6 +330,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function rename(string $objectId, string $newObjectId)
     {
+        $this->_regenertateAccessToken();
         if ($this->has($newObjectId)) {
             throw new InvalidArgumentException("Cannot rename '$objectId'. ObjectId '$newObjectId' already in use.");
         }
@@ -347,6 +364,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function append(string $objectId, string $data)
     {
+        $this->_regenertateAccessToken();
         if ( ! $this->encryption->supportsAppending())
             throw new InvalidArgumentException("Streaming is unsupported on this enryption method.");
 
@@ -395,6 +413,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function getMeta(string $objectId): array
     {
+        $this->_regenertateAccessToken();
         $i = 0;
         do {
             try {
