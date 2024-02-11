@@ -17,6 +17,7 @@ use Google\Cloud\Storage\Bucket;
 use Google\Cloud\Storage\StorageClient;
 use InvalidArgumentException;
 use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
+use Phore\ObjectStore\Encryption\PassThruNoEncryption;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 use Psr\Http\Message\StreamInterface;
 
@@ -35,6 +36,11 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
 
 
     private $putOpts = [];
+
+    /**
+     * @var ObjectStoreEncryption
+     */
+    private $encryption;
 
     /**
      * GoogleObjectStoreDriver constructor.
@@ -59,11 +65,12 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
         $storage = new StorageClient($options);
 
         $this->bucket = $storage->bucket($bucketName);
+        $this->encryption = $this->encryption ?? new PassThruNoEncryption();
     }
 
     public function setEncryption(ObjectStoreEncryption $encryption)
     {
-        throw new InvalidArgumentException("Encryption not supported in Google implementation");
+        $this->encryption = $encryption;
     }
     /**
      * @param string $objectId
@@ -101,7 +108,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
     public function put(string $objectId, $content, array $metadata = null)
     {
         $opts = $this->_getPutOpts($objectId, $metadata);
-        $this->bucket->upload($content, $opts);
+        $this->bucket->upload($this->encryption->encrypt($content), $opts);
     }
 
     /**
@@ -112,6 +119,9 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function putStream(string $objectId, $resource, array $metadata = null)
     {
+        if ( ! ($this->encryption instanceof PassThruNoEncryption)) {
+            throw new \InvalidArgumentException("Cannot put stream with encryption enabled.");
+        }
         $opts = $this->_getPutOpts($objectId, $metadata);
         $this->bucket->upload($resource, $opts);
     }
@@ -133,7 +143,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
                 if (isset ($info['metadata'])) {
                     $meta = $info['metadata'];
                 }
-                return $data;
+                return $this->encryption->decrypt($data);
             } catch (NotFoundException $e) {
                 throw new \Phore\Core\Exception\NotFoundException($e->getMessage(), $e->getCode(), $e);
             } catch (Exception $e) {
@@ -155,6 +165,9 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function getStream(string $objectId, array &$meta = null): StreamInterface
     {
+        if ( ! ($this->encryption instanceof PassThruNoEncryption)) {
+            throw new \InvalidArgumentException("Cannot put stream with encryption enabled.");
+        }
         try {
             $object = $this->bucket->object($objectId);
             $stream = $object->downloadAsStream();
@@ -252,6 +265,9 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      */
     public function append(string $objectId, string $data)
     {
+        if ( ! ($this->encryption instanceof PassThruNoEncryption)) {
+            throw new \InvalidArgumentException("Cannot put stream with encryption enabled.");
+        }
         $ext = pathinfo($objectId)['extension'];
         if ($ext !== '') {
             $ext = ".$ext";

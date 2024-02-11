@@ -44,7 +44,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     public $accessToken;
 
     private int $accessTokenExpires = 0;
-    
+
     /**
      * @var integer
      */
@@ -83,15 +83,15 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
             $this->encryption = new PassThruNoEncryption();
     }
 
-    
+
     protected function _regenertateAccessToken () {
         if (time() < $this->accessTokenExpires)
             return;
         $this->accessToken = $this->_getJwt()['access_token'];
         $this->accessTokenExpires = time() + 300;
     }
-    
-    
+
+
     public function setRetries(int $retries)
     {
         $this->retries = $retries;
@@ -132,7 +132,10 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
 
         $signedToken = $b64header . '.' . $b64payload . '.' . $this->_base64Enc($signature);
 
-        return phore_http_request('https://oauth2.googleapis.com/token')->withPostFormBody(['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $signedToken])->send()->getBodyJson();
+
+        $jwt = phore_http_request('https://oauth2.googleapis.com/token')->withPostFormBody(['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => $signedToken])->send()->getBodyJson();
+
+        return $jwt;
     }
 
     /**
@@ -143,7 +146,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
     public function has(string $objectId): bool
     {
         $this->_regenertateAccessToken();
-        
+
         $i = 0;
         do {
             try {
