@@ -31,7 +31,7 @@ interface ObjectStoreDriver
      * @param array|null $metadata
      * @return mixed
      */
-    public function put(string $objectId, $content, array $metadata = null);
+    public function put(string $objectId, $content, array $metadata = null, bool $validateGeneration = false);
 
     /**
      * @param string $objectId
@@ -39,7 +39,7 @@ interface ObjectStoreDriver
      * @param array|null $metadata
      * @return mixed
      */
-    public function putStream(string $objectId, $resource, array $metadata = null);
+    public function putStream(string $objectId, $resource, array $metadata = null, bool $validateGeneration = false);
 
     /**
      * @param string $objectId

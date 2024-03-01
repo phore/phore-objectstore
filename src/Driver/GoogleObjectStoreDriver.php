@@ -11,6 +11,7 @@ namespace Phore\ObjectStore\Driver;
 
 use DateTime;
 use Exception;
+use Google\Cloud\Core\Exception\FailedPreconditionException;
 use Google\Cloud\Core\Exception\GoogleException;
 use Google\Cloud\Core\Exception\NotFoundException;
 use Google\Cloud\Storage\Bucket;
@@ -18,6 +19,7 @@ use Google\Cloud\Storage\StorageClient;
 use InvalidArgumentException;
 use Phore\ObjectStore\Encryption\ObjectStoreEncryption;
 use Phore\ObjectStore\Encryption\PassThruNoEncryption;
+use Phore\ObjectStore\GenerationMismatchException;
 use Phore\ObjectStore\Type\ObjectStoreObject;
 use Psr\Http\Message\StreamInterface;
 
@@ -103,12 +105,21 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string $objectId
      * @param $content
      * @param array|null $metadata
+     * @param bool $validateGeneration Update only if generation matches (useful for optimistic locking)
      * @return mixed|void
      */
-    public function put(string $objectId, $content, array $metadata = null)
+    public function put(string $objectId, $content, array $metadata = null, bool $validateGeneration = false)
     {
         $opts = $this->_getPutOpts($objectId, $metadata);
-        $this->bucket->upload($this->encryption->encrypt($content), $opts);
+        if ($validateGeneration && $metadata !== null) {
+            $opts['ifGenerationMatch'] = $metadata['generation'];
+        }
+        try {
+            $this->bucket->upload($this->encryption->encrypt($content), $opts);
+        } catch (FailedPreconditionException $e) {
+            throw new GenerationMismatchException($e->getMessage(), $e->getCode(), $e);
+        }
+
     }
 
     /**

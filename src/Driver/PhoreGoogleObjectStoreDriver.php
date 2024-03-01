@@ -201,7 +201,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $metadata
      * @return bool
      */
-    public function put(string $objectId, $content, array $metadata = null)
+    public function put(string $objectId, $content, array $metadata = null, bool $validateGeneration = false): bool
     {
         $this->_regenertateAccessToken();
         $i = 0;
@@ -227,6 +227,11 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         if (is_array($content) || is_object($content)) {
             $content = phore_json_encode($content);
         }
+
+        if ($validateGeneration) {
+            $meta['ifGenerationMatch'] = $meta["generation"];
+        }
+
         $meta = phore_json_encode($meta);
         $delimiter = 'delimiter';
         $body = "--$delimiter\nContent-Type: application/json; charset=UTF-8\n\n$meta\n\n--$delimiter\nContent-Type: {$this->_getContentType($objectId)}\n\n{$this->encryption->encrypt($content)}\n--$delimiter--";

@@ -12,6 +12,7 @@ namespace Phore\ObjectStore\Type;
 use Exception;
 use Phore\Core\Exception\NotFoundException;
 use Phore\ObjectStore\Driver\ObjectStoreDriver;
+use Phore\ObjectStore\GenerationMismatchException;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -118,21 +119,25 @@ class ObjectStoreObject
 
     /**
      * @param string $data
+     * @param bool $validateGeneration  Put only if the generation (version) is the same (for optimistic locking)
      * @return $this
+     * @throws GenerationMismatchException
      */
-    public function put(string $data): self
+    public function put(string $data, bool $validateGeneration = false): self
     {
-        $this->driver->put($this->objectId, $data, $this->metaData);
+        $this->driver->put($this->objectId, $data, $this->metaData, $validateGeneration);
         return $this;
     }
 
     /**
      * @param array $data
+     * @param bool $validateGeneration  Put only if the generation (version) is the same (for optimistic locking)
      * @return $this
+     * @throws GenerationMismatchException
      */
-    public function putJson(array $data): self
+    public function putJson(array $data, bool $validateGeneration = false): self
     {
-        $this->driver->put($this->objectId, phore_json_encode($data), $this->metaData);
+        $this->driver->put($this->objectId, phore_json_encode($data), $this->metaData, $validateGeneration);
         return $this;
     }
 
@@ -140,9 +145,9 @@ class ObjectStoreObject
      * @param $resource
      * @return $this
      */
-    public function putStream($resource): self
+    public function putStream($resource, bool $validateGeneration = false): self
     {
-        $this->driver->putStream($this->objectId, $resource, $this->metaData);
+        $this->driver->putStream($this->objectId, $resource, $this->metaData, $validateGeneration);
         return $this;
     }
 
