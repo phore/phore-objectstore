@@ -257,7 +257,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param $resource
      * @param array|null $metadata
      */
-    public function putStream(string $objectId, $resource, array $metadata = null)
+    public function putStream(string $objectId, $resource, array $metadata = null, bool $validateGeneration = false)
     {
         throw new InvalidArgumentException('Method not implemented.');
     }

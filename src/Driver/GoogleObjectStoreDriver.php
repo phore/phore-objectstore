@@ -128,12 +128,15 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $metadata
      * @return mixed|void
      */
-    public function putStream(string $objectId, $resource, array $metadata = null)
+    public function putStream(string $objectId, $resource, array $metadata = null, bool $validateGeneration = false)
     {
         if ( ! ($this->encryption instanceof PassThruNoEncryption)) {
             throw new \InvalidArgumentException("Cannot put stream with encryption enabled.");
         }
         $opts = $this->_getPutOpts($objectId, $metadata);
+        if ($validateGeneration && $metadata !== null) {
+            $opts['ifGenerationMatch'] = $metadata['generation'];
+        }
         $this->bucket->upload($resource, $opts);
     }
 
