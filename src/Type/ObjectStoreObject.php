@@ -135,8 +135,10 @@ class ObjectStoreObject
      * @return $this
      * @throws GenerationMismatchException
      */
-    public function putJson(array $data, bool $validateGeneration = false): self
+    public function putJson(array|object $data, bool $validateGeneration = false): self
     {
+        if (is_object($data))
+            $data = (array)$data;
         $this->driver->put($this->objectId, phore_json_encode($data), $this->metaData, $validateGeneration);
         return $this;
     }
