@@ -31,12 +31,13 @@ class SodiumSyncEncryption implements ObjectStoreEncryption
         if ($decrypted === false) {
             throw new \InvalidArgumentException("Could not decrypt data");
         }
-        $deflatedData = gzinflate($decrypted);
-        if ($deflatedData === false) {
+        try {
+            $deflatedData = gzinflate($decrypted);
+            return $deflatedData;
+        } catch (\Exception|\Error $e) {
             return $decrypted; // Transition period
-            throw new \InvalidArgumentException("Could not gzinflate data");
         }
-        return $deflatedData;
+        
     }
 
     public function supportsStreaming(): bool
