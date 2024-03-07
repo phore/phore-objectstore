@@ -34,7 +34,7 @@ class SodiumSyncEncryption implements ObjectStoreEncryption
         try {
             $deflatedData = gzinflate($decrypted);
             return $deflatedData;
-        } catch (\Exception|\Error $e) {
+        } catch (\Exception|\Error|\Throwable $e) {
             return $decrypted; // Transition period
         }
         
