@@ -73,7 +73,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * @throws FilesystemException
      * @throws PathOutOfBoundsException
      */
-    public function put(string $objectId, $content, array $metadata = null)
+    public function put(string $objectId, $content, array $metadata = null,  bool $validateGeneration = false)
     {
         $file = $this->rootDir->withSubPath($objectId)->asFile();
         $dir = $file->getDirname()->asDirectory();
@@ -92,7 +92,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $metadata
      * @return mixed|void
      */
-    public function putStream(string $objectId, $resource, array $metadata = null)
+    public function putStream(string $objectId, $resource, array $metadata = null,  bool $validateGeneration = false)
     {
         throw new InvalidArgumentException('Not implemented yet.');
         // TODO: Implement putStream() method.
