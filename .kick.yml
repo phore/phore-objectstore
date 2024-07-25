@@ -1,7 +1,7 @@
 version: 1
-from: "infracamp/kickstart-flavor-gaia:testing"
+from: "ghcr.io/nfra-project/kickstart-flavor-php:unstable"
 
-apache_fallback_resource: "/index.php"
+packages: ["php8.1-simplexml"]
 
 config_file:
   template: "config.php.dist"

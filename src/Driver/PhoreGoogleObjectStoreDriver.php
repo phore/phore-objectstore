@@ -62,16 +62,20 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
 
     /**
      * PhoreGoogleObjectStoreDriver constructor.
-     * @param string $configFilePath
+     * @param string $configOrConfigFile
      * @param string $bucketName
      * @param bool $retry
      * @throws FileNotFoundException
      * @throws FileParsingException
      * @throws PhoreHttpRequestException
      */
-    public function __construct(string $configFilePath, string $bucketName, bool $retry = false, ObjectStoreEncryption $encryption = null)
+    public function __construct(string|array $configOrConfigFile, string $bucketName, bool $retry = false, ObjectStoreEncryption $encryption = null)
     {
-        $this->config = phore_file($configFilePath)->get_json();
+        if (! is_array($configOrConfigFile)) {
+            $this->config = phore_file($configOrConfigFile)->get_json();
+        } else {
+            $this->config = $configOrConfigFile;
+        }
         $this->bucketName = $bucketName;
         $this->base_url .= '/b/' . $bucketName;
         $this->retry = $retry;

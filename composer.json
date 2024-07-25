@@ -8,7 +8,7 @@
   "repositories": [
   ],
   "require": {
-    "php": ">=7.1",
+    "php": ">=8.0",
     "phore/core": "*",
     "ext-json": "*",
     "ext-yaml": "*",
@@ -27,10 +27,17 @@
   },
   "minimum-stability": "dev",
   "require-dev": {
-    "phpunit/phpunit": "10.5.9",
+    "phore/tester": "dev-master",
+    "lack/keystore": "dev-main",
     "google/cloud-storage": "*",
     "phore/filesystem": "*",
     "aws/aws-sdk-php": "^3.300.7",
     "microsoft/azure-storage-blob": "*"
+  },
+  "config": {
+    "preferred-install": "source",
+    "allow-plugins": {
+      "php-http/discovery": false
+    }
   }
 }

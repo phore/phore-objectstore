@@ -10,7 +10,7 @@
 
 
 define("DEV_MODE", (bool)"%DEV_MODE%");
-define("VERSION_INFO", "v0.1.%VERSION_NUMBER% (%VERSION_DATE_COMPACT%)");
+define("VERSION_INFO", "v0.1");
 define("GOOGLE_KEYFILE_PATH", "%GOOGLE_KEYFILE_PATH?/run/secrets/google_test%");
 define("AZURE_KEYFILE_PATH", "%AZURE_KEYFILE_PATH?/run/secrets/azure%");
 

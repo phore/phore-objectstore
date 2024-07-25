@@ -8,3 +8,4 @@
 /config.php
 /report
 /.env
+.keystore.yml
