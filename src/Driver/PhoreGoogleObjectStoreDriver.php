@@ -69,7 +69,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @throws FileParsingException
      * @throws PhoreHttpRequestException
      */
-    public function __construct(string|array $configOrConfigFile, string $bucketName, bool $retry = false, ObjectStoreEncryption $encryption = null)
+    public function __construct(string|array $configOrConfigFile, string $bucketName, bool $retry = false, ?ObjectStoreEncryption $encryption = null)
     {
         if (! is_array($configOrConfigFile)) {
             $this->config = phore_file($configOrConfigFile)->get_json();
@@ -205,7 +205,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $metadata
      * @return bool
      */
-    public function put(string $objectId, $content, array $metadata = null, bool $validateGeneration = false): bool
+    public function put(string $objectId, $content, ?array $metadata = null, bool $validateGeneration = false): bool
     {
         $this->_regenertateAccessToken();
         $i = 0;
@@ -261,7 +261,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param $resource
      * @param array|null $metadata
      */
-    public function putStream(string $objectId, $resource, array $metadata = null, bool $validateGeneration = false)
+    public function putStream(string $objectId, $resource, ?array $metadata = null, bool $validateGeneration = false)
     {
         throw new InvalidArgumentException('Method not implemented.');
     }
@@ -273,7 +273,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @throws NotFoundException
      * @throws PhoreHttpRequestException
      */
-    public function get(string $objectId, array &$meta = null): string
+    public function get(string $objectId, ?array &$meta = null): string
     {
         $this->_regenertateAccessToken();
         $i = 0;
@@ -301,7 +301,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $meta
      * @return StreamInterface
      */
-    public function getStream(string $objectId, array &$meta = null): StreamInterface
+    public function getStream(string $objectId, ?array &$meta = null): StreamInterface
     {
         throw new InvalidArgumentException('Method not implemented.');
     }
@@ -462,7 +462,7 @@ class PhoreGoogleObjectStoreDriver implements ObjectStoreDriver
         throw new InvalidArgumentException('Method not implemented.');
     }
 
-    public function list(string $prefix = null): array
+    public function list(?string $prefix = null): array
     {
         // TODO: Implement list() method.
     }

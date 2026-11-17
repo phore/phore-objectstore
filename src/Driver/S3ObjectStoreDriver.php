@@ -21,7 +21,7 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
 
     private $bucket;
 
-    public function __construct(string $region, string $bucket, string $account=null, string $secretkey=null)
+    public function __construct(string $region, string $bucket, ?string $account=null, ?string $secretkey=null)
     {
         if ( ! class_exists(S3Client::class))
             throw new \InvalidArgumentException("Package 'aws/aws-sdk-php' is required to use s3nd");
@@ -59,7 +59,7 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
         }
     }
 
-    public function put(string $objectId, $content, array $metadata = null)
+    public function put(string $objectId, $content, ?array $metadata = null)
     {
         $this->client->putObject([
             "Bucket" => $this->bucket,
@@ -68,12 +68,12 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
         ]);
     }
 
-    public function putStream(string $objectId, $resource, array $metadata = null)
+    public function putStream(string $objectId, $resource, ?array $metadata = null)
     {
         // TODO: Implement putStream() method.
     }
 
-    public function get(string $objectId, array &$meta = null): string
+    public function get(string $objectId, ?array &$meta = null): string
     {
         try {
             $result = $this->client->getObject([
@@ -91,7 +91,7 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
 
     }
 
-    public function getStream(string $objectId, array &$meta = null): StreamInterface
+    public function getStream(string $objectId, ?array &$meta = null): StreamInterface
     {
         // TODO: Implement getStream() method.
     }
@@ -142,7 +142,7 @@ class S3ObjectStoreDriver implements ObjectStoreDriver
         // TODO: Implement walk() method.
     }
 
-    public function list(string $prefix = null): array
+    public function list(?string $prefix = null): array
     {
         $opts = ["Bucket" => $this->bucket];
         if ($prefix !== null)

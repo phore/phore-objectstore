@@ -31,7 +31,7 @@ interface ObjectStoreDriver
      * @param array|null $metadata
      * @return mixed
      */
-    public function put(string $objectId, $content, array $metadata = null, bool $validateGeneration = false);
+    public function put(string $objectId, $content, ?array $metadata = null, bool $validateGeneration = false);
 
     /**
      * @param string $objectId
@@ -39,7 +39,7 @@ interface ObjectStoreDriver
      * @param array|null $metadata
      * @return mixed
      */
-    public function putStream(string $objectId, $resource, array $metadata = null, bool $validateGeneration = false);
+    public function putStream(string $objectId, $resource, ?array $metadata = null, bool $validateGeneration = false);
 
     /**
      * @param string $objectId
@@ -47,7 +47,7 @@ interface ObjectStoreDriver
      * @return StreamInterface
      * @throws NotFoundException
      */
-    public function get(string $objectId, array &$meta = null): string;
+    public function get(string $objectId, ?array &$meta = null): string;
 
     /**
      * @param string $objectId
@@ -55,7 +55,7 @@ interface ObjectStoreDriver
      * @return StreamInterface
      * @throws NotFoundException
      */
-    public function getStream(string $objectId, array &$meta = null): StreamInterface;
+    public function getStream(string $objectId, ?array &$meta = null): StreamInterface;
 
 
     /**
@@ -138,7 +138,7 @@ interface ObjectStoreDriver
      *
      * @return array returns an empty array if no data is available
      */
-    public function list(string $prefix = null): array;
+    public function list(?string $prefix = null): array;
 
     public function setEncryption(ObjectStoreEncryption $encryption);
 

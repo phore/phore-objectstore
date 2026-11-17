@@ -88,7 +88,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $metadata
      * @return array
      */
-    private function _getPutOpts($objectId, array $metadata = null): array
+    private function _getPutOpts($objectId, ?array $metadata = null): array
     {
         $opts = $this->putOpts;
         $opts["name"] = $objectId;
@@ -108,7 +108,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param bool $validateGeneration Update only if generation matches (useful for optimistic locking)
      * @return mixed|void
      */
-    public function put(string $objectId, $content, array $metadata = null, bool $validateGeneration = false)
+    public function put(string $objectId, $content, ?array $metadata = null, bool $validateGeneration = false)
     {
         $opts = $this->_getPutOpts($objectId, $metadata);
         if ($validateGeneration && $metadata !== null) {
@@ -128,7 +128,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $metadata
      * @return mixed|void
      */
-    public function putStream(string $objectId, $resource, array $metadata = null, bool $validateGeneration = false)
+    public function putStream(string $objectId, $resource, ?array $metadata = null, bool $validateGeneration = false)
     {
         if ( ! ($this->encryption instanceof PassThruNoEncryption)) {
             throw new \InvalidArgumentException("Cannot put stream with encryption enabled.");
@@ -147,7 +147,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @throws Exception
      * @throws \Phore\Core\Exception\NotFoundException
      */
-    public function get(string $objectId, array &$meta = null): string
+    public function get(string $objectId, ?array &$meta = null): string
     {
         for ($i = 0; $i < 10; $i++) {
             try {
@@ -177,7 +177,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @return StreamInterface
      * @throws \Phore\Core\Exception\NotFoundException
      */
-    public function getStream(string $objectId, array &$meta = null): StreamInterface
+    public function getStream(string $objectId, ?array &$meta = null): StreamInterface
     {
         if ( ! ($this->encryption instanceof PassThruNoEncryption)) {
             throw new \InvalidArgumentException("Cannot put stream with encryption enabled.");
@@ -209,7 +209,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      * @param string|null $filter
      * @return bool
      */
-    public function walk(callable $walkFunction, string $filter = null): bool
+    public function walk(callable $walkFunction, ?string $filter = null): bool
     {
         foreach ($this->bucket->objects() as $object) {
             $meta = null;
@@ -327,7 +327,7 @@ class GoogleObjectStoreDriver implements ObjectStoreDriver
      *
      * @return array returns an empty array if no data is available
      */
-    public function list(string $prefix = null): array
+    public function list(?string $prefix = null): array
     {
         $options = [];
         if ($prefix !== null) {

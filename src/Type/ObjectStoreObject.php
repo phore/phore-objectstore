@@ -41,7 +41,7 @@ class ObjectStoreObject
      * @param string $objectId
      * @param array|null $metadata
      */
-    public function __construct(ObjectStoreDriver $driver, string $objectId, array $metadata = null)
+    public function __construct(ObjectStoreDriver $driver, string $objectId, ?array $metadata = null)
     {
         $this->driver = $driver;
         $this->objectId = $objectId;
@@ -89,7 +89,7 @@ class ObjectStoreObject
      * @return array|T
      * @throws NotFoundException
      */
-    public function getJson(string $cast = null): array|object
+    public function getJson(?string $cast = null): array|object
     {
         $data = $this->get();
         $ret = json_decode($data, true);

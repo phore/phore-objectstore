@@ -68,7 +68,7 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
      * @param $content
      * @param array|null $metadata
      */
-    public function put(string $objectId, $content, array $metadata = null): void
+    public function put(string $objectId, $content, ?array $metadata = null): void
     {
         $options = null;
         if ($metadata !== null) {
@@ -83,7 +83,7 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
      * @param $resource
      * @param array|null $metadata
      */
-    public function putStream(string $objectId, $resource, array $metadata = null): void
+    public function putStream(string $objectId, $resource, ?array $metadata = null): void
     {
         $options = null;
         if ($metadata !== null) {
@@ -100,7 +100,7 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
      * @throws NotFoundException
      * @throws Exception
      */
-    public function get(string $objectId, array &$meta = null): string
+    public function get(string $objectId, ?array &$meta = null): string
     {
         try {
             $blob = $this->blobClient->getBlob($this->containerName, $objectId);
@@ -121,7 +121,7 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
      * @return StreamInterface
      * @todo needs to be implemented like in the GoogleObjectStoreDriver
      */
-    public function getStream(string $objectId, array &$meta = null): StreamInterface
+    public function getStream(string $objectId, ?array &$meta = null): StreamInterface
     {
         // TODO: Implement getStream() method.
     }
@@ -202,7 +202,7 @@ class AzureObjectStoreDriver implements ObjectStoreDriver
      *
      * @return array returns an empty array if no data is available
      */
-    public function list(string $prefix = null): array
+    public function list(?string $prefix = null): array
     {
         $listBlobsOptions = new ListBlobsOptions();
         if ($prefix !== null) {

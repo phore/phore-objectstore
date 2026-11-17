@@ -36,7 +36,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      */
     private $encryption;
 
-    public function __construct(string $rootDir, ObjectStoreEncryption $encryption = null)
+    public function __construct(string $rootDir, ?ObjectStoreEncryption $encryption = null)
     {
         if (!class_exists('\Phore\FileSystem\PhoreDirectory')) {
             throw new InvalidArgumentException('PhoreFilesystem is currently not installed. Install phore/filesystem to use FileSystemObjectStoreDriver');
@@ -73,7 +73,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * @throws FilesystemException
      * @throws PathOutOfBoundsException
      */
-    public function put(string $objectId, $content, array $metadata = null,  bool $validateGeneration = false)
+    public function put(string $objectId, $content, ?array $metadata = null,  bool $validateGeneration = false)
     {
         $file = $this->rootDir->withSubPath($objectId)->asFile();
         $dir = $file->getDirname()->asDirectory();
@@ -92,7 +92,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * @param array|null $metadata
      * @return mixed|void
      */
-    public function putStream(string $objectId, $resource, array $metadata = null,  bool $validateGeneration = false)
+    public function putStream(string $objectId, $resource, ?array $metadata = null,  bool $validateGeneration = false)
     {
         throw new InvalidArgumentException('Not implemented yet.');
         // TODO: Implement putStream() method.
@@ -108,7 +108,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * @throws FileParsingException
      * @throws PathOutOfBoundsException
      */
-    public function get(string $objectId, array &$meta = null): string
+    public function get(string $objectId, ?array &$meta = null): string
     {
         $metaFile = $this->rootDir->withSubPath($objectId . self::META_SUFFIX)->asFile();
         if ($metaFile->isFile()) {
@@ -133,7 +133,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      * @return StreamInterface
      * @throws PathOutOfBoundsException
      */
-    public function getStream(string $objectId, array &$meta = null): StreamInterface
+    public function getStream(string $objectId, ?array &$meta = null): StreamInterface
     {
         if ( ! $this->encryption->supportsStreaming())
             throw new InvalidArgumentException("Encryption does not support streaming.");
@@ -268,7 +268,7 @@ class FileSystemObjectStoreDriver implements ObjectStoreDriver
      *
      * @return array returns an empty array if no data is available
      */
-    public function list(string $prefix = null): array
+    public function list(?string $prefix = null): array
     {
         $scanned_directory = array_diff(scandir($this->rootDir), array('..', '.'));
         $objectList = [];
